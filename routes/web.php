@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,8 +14,25 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// Redirect root to appropriate dashboard based on auth status
 Route::get('/', function () {
-    return ['Laravel' => app()->version()];
+    if (auth()->check()) {
+        if (auth()->user()->isAdmin()) {
+            return redirect()->route('admin.dashboard');
+        }
+        return redirect()->route('dashboard');
+    }
+    return view('welcome');
+})->name('welcome');
+
+// Protected routes for authenticated users
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+});
+
+// Admin-only routes
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin/dashboard', [DashboardController::class, 'admin'])->name('admin.dashboard');
 });
 
 require __DIR__.'/auth.php';

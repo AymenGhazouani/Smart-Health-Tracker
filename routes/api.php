@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+require base_path('routes/MealPlan.php');
 
 // Public API routes
 Route::post('/register', [ApiRegisterController::class, 'register']);

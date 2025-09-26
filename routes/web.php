@@ -31,8 +31,9 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // Admin-only routes
-Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/admin/dashboard', [DashboardController::class, 'admin'])->name('admin.dashboard');
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'admin'])->name('dashboard');
+    Route::resource('foods', \App\Http\Controllers\MealPlanningFt\Api\V1\FoodController::class);
 });
 
 require __DIR__.'/auth.php';

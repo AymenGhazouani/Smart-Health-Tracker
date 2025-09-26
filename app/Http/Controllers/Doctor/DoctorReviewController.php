@@ -32,15 +32,18 @@ class DoctorReviewController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request, Doctor $doctor)
-    {
-        $data = $request->validate([
-            'rating' => 'required|integer|min:1|max:5',
-            'comment' => 'nullable|string',
-            'user_id' => 'nullable|integer', // if you have users
-        ]);
+{
+    $data = $request->validate([
+        'rating' => 'required|integer|min:1|max:5',
+        'comment' => 'nullable|string',
+    ]);
 
-        return $this->reviewService->create($doctor, $data);
-    }
+    // Assign the authenticated user's ID
+    $data['user_id'] = $request->user()->id;
+
+    return $this->reviewService->create($doctor, $data);
+}
+
 
     /**
      * Display the specified resource.
@@ -62,6 +65,10 @@ class DoctorReviewController extends Controller
      */
     public function update(Request $request, DoctorReview $review)
     {
+        if ($request->user()->id !== $review->user_id) {
+        return response()->json(['message' => 'Forbidden'], 403);
+    }
+
         $data = $request->validate([
             'rating' => 'sometimes|integer|min:1|max:5',
             'comment' => 'nullable|string',
@@ -76,9 +83,14 @@ class DoctorReviewController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(DoctorReview $review)
-    {
-        $this->reviewService->delete($review);
-        return response()->noContent();
+    public function destroy(Request $request, DoctorReview $review)
+{
+    if ($request->user()->id !== $review->user_id) {
+        return response()->json(['message' => 'Forbidden'], 403);
     }
+
+    $this->reviewService->delete($review);
+    return response()->noContent();
+}
+
 }

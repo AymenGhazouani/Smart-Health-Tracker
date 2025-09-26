@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('doctor_reviews', function (Blueprint $table) {
             $table->id();
             $table->foreignId('doctor_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->tinyInteger('rating'); // 1-5
             $table->text('comment')->nullable();
             $table->timestamps();

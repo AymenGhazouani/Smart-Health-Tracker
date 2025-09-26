@@ -32,6 +32,10 @@ class SpecialtyController extends Controller
      */
     public function store(Request $request)
     {
+        if (!$request->user()->isAdmin()) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+
         $data = $request->validate([
             'name' => 'required|string|max:255',
         ]);
@@ -59,6 +63,10 @@ class SpecialtyController extends Controller
      */
    public function update(Request $request, Specialty $specialty)
     {
+        if (!$request->user()->isAdmin()) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+
         $data = $request->validate([
             'name' => 'sometimes|string|max:255',
         ]);
@@ -72,9 +80,14 @@ class SpecialtyController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Specialty $specialty)
-    {
-        $this->specialtyService->delete($specialty);
-        return response()->noContent();
+   public function destroy(Request $request, Specialty $specialty)
+{
+    if (!$request->user()->isAdmin()) {
+        return response()->json(['message' => 'Forbidden'], 403);
     }
+
+    $this->specialtyService->delete($specialty);
+    return response()->noContent();
+}
+
 }

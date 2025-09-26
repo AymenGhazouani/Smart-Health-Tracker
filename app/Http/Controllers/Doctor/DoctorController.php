@@ -31,6 +31,10 @@ class DoctorController extends Controller
      */
     public function store(Request $request)
     {
+        if (!$request->user()->isAdmin()) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:doctors,email',
@@ -61,6 +65,10 @@ class DoctorController extends Controller
      */
      public function update(Request $request, Doctor $doctor)
     {
+        if (!$request->user()->isAdmin()) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+
         $data = $request->validate([
             'name' => 'sometimes|string|max:255',
             'email' => 'sometimes|email|unique:doctors,email,' . $doctor->id,
@@ -78,9 +86,14 @@ class DoctorController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-     public function destroy(Doctor $doctor)
-    {
-        $this->doctorService->delete($doctor);
-        return response()->noContent();
+    public function destroy(Request $request, Doctor $doctor)
+{
+    if (!$request->user()->isAdmin()) {
+        return response()->json(['message' => 'Forbidden'], 403);
     }
+
+    $this->doctorService->delete($doctor);
+    return response()->noContent();
+}
+
 }

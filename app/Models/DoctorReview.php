@@ -11,6 +11,7 @@ class DoctorReview extends Model
     protected $fillable = [
         'doctor_id',
         'rating',
+        'user_id',
         'comment',
     ];
 

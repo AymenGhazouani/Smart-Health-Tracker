@@ -4,7 +4,9 @@ use App\Http\Controllers\Auth\ApiAuthController;
 use App\Http\Controllers\Auth\ApiRegisterController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\Doctor\DoctorController;
+use App\Http\Controllers\Doctor\SpecialtyController;
+use App\Http\Controllers\Doctor\DoctorReviewController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -24,4 +26,24 @@ Route::post('/login', [ApiAuthController::class, 'login']);
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user', [ApiAuthController::class, 'user']);
     Route::post('/logout', [ApiAuthController::class, 'logout']);
+
+    Route::prefix('v1')->group(function () {
+
+        // Doctors CRUD
+        Route::apiResource('doctors', DoctorController::class);
+
+        // Specialties CRUD
+        Route::apiResource('specialties', SpecialtyController::class);
+
+        // Doctor Reviews
+        Route::get('doctors/{doctor}/reviews', [DoctorReviewController::class, 'index']);
+        Route::post('doctors/{doctor}/reviews', [DoctorReviewController::class, 'store']);
+
+        // Optional: review CRUD
+        Route::get('reviews/{review}', [DoctorReviewController::class, 'show']);
+        Route::put('reviews/{review}', [DoctorReviewController::class, 'update']);
+        Route::delete('reviews/{review}', [DoctorReviewController::class, 'destroy']);
+    });
+
+
 });

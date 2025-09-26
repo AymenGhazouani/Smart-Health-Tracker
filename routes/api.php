@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Auth\ApiAuthController;
+use App\Http\Controllers\Auth\ApiRegisterController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -13,7 +15,14 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+require base_path('routes/MealPlan.php');
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// Public API routes
+Route::post('/register', [ApiRegisterController::class, 'register']);
+Route::post('/login', [ApiAuthController::class, 'login']);
+
+// Protected API routes
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/user', [ApiAuthController::class, 'user']);
+    Route::post('/logout', [ApiAuthController::class, 'logout']);
 });

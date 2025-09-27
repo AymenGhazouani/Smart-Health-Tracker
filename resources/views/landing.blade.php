@@ -120,9 +120,9 @@
                         <h3 class="ml-4 text-lg font-semibold text-gray-900">Health Metrics</h3>
                     </div>
                     <p class="text-gray-600 mb-4">Monitor vital signs, weight, blood pressure, and other important health indicators.</p>
-                    <button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out">
+                    <a href="{{ route('metrics.dashboard') }}" class="w-full inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out">
                         View Metrics
-                    </button>
+                    </a>
                 </div>
             </div>
 

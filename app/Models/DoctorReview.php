@@ -19,4 +19,8 @@ class DoctorReview extends Model
     {
         return $this->belongsTo(Doctor::class);
     }
+     public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

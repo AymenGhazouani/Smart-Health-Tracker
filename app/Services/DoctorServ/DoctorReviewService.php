@@ -15,10 +15,11 @@ class DoctorReviewService
 
     // Create a review for a doctor
     public function create(Doctor $doctor, array $data)
-    {
-        $data['doctor_id'] = $doctor->id;
-        return DoctorReview::create($data);
-    }
+{
+    $data['doctor_id'] = $doctor->id; // attach doctor_id
+    return DoctorReview::create($data);
+}
+
 
     // Optionally, get a single review by ID
     public function getById($id)

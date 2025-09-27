@@ -7,9 +7,15 @@ use App\Models\Doctor;
 class DoctorService
 {
     public function getAll()
-    {
-        return Doctor::all();
-    }
+{
+    // Paginate doctors, 10 per page
+    return Doctor::paginate(10);
+}
+
+    // public function getAll()
+    // {
+    //     return Doctor::all();
+    // }
 
     public function getById($id)
     {

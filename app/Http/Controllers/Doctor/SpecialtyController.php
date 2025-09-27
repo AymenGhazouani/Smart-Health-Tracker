@@ -19,75 +19,63 @@ class SpecialtyController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        return $this->specialtyService->getAll();
-    }
+public function index()
+{
+    $specialties = $this->specialtyService->getAll();
+    return view('specialties.index', compact('specialties'));
+}
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        if (!$request->user()->isAdmin()) {
-            return response()->json(['message' => 'Forbidden'], 403);
-        }
+public function create()
+{
+    return view('specialties.create');
+}
 
-        $data = $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
-
-        return $this->specialtyService->create($data);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Specialty $specialty)
-    {
-        return $this->specialtyService->getById($specialty->id);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-   public function update(Request $request, Specialty $specialty)
-    {
-        if (!$request->user()->isAdmin()) {
-            return response()->json(['message' => 'Forbidden'], 403);
-        }
-
-        $data = $request->validate([
-            'name' => 'sometimes|string|max:255',
-        ]);
-
-        return $this->specialtyService->update($specialty, $data);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-   public function destroy(Request $request, Specialty $specialty)
+public function store(Request $request)
 {
     if (!$request->user()->isAdmin()) {
-        return response()->json(['message' => 'Forbidden'], 403);
+        return redirect()->back()->with('error', 'Forbidden');
+    }
+
+    $data = $request->validate([
+        'name' => 'required|string|max:255',
+    ]);
+
+    $this->specialtyService->create($data);
+
+return redirect()->back()->with('success', 'Specialty created successfully!');}
+
+public function edit(Specialty $specialty)
+{
+    return view('specialties.edit', compact('specialty'));
+}
+
+public function update(Request $request, Specialty $specialty)
+{
+    if (!$request->user()->isAdmin()) {
+        return redirect()->back()->with('error', 'Forbidden');
+    }
+
+    $data = $request->validate([
+        'name' => 'required|string|max:255',
+    ]);
+
+    $this->specialtyService->update($specialty, $data);
+
+    return redirect()->route('doctor.index')->with('success', 'Specialty updated successfully!');
+}
+
+public function destroy(Request $request, Specialty $specialty)
+{
+    if (!$request->user()->isAdmin()) {
+        return redirect()->back()->with('error', 'Forbidden');
     }
 
     $this->specialtyService->delete($specialty);
-    return response()->noContent();
+
+    // Stay on the same page
+    return redirect()->back()->with('success', 'Specialty deleted successfully!');
 }
+
+
 
 }

@@ -31,18 +31,26 @@ class DoctorReviewController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Doctor $doctor)
+    public function store(Request $request)
 {
     $data = $request->validate([
+        'doctor_id' => 'required|exists:doctors,id',
         'rating' => 'required|integer|min:1|max:5',
         'comment' => 'nullable|string',
     ]);
 
+    // Fetch the doctor model
+    $doctor = Doctor::findOrFail($data['doctor_id']);
+
     // Assign the authenticated user's ID
     $data['user_id'] = $request->user()->id;
 
-    return $this->reviewService->create($doctor, $data);
+    // Create the review
+    $this->reviewService->create($doctor, $data);
+
+    return redirect()->back()->with('success', 'Review added successfully!');
 }
+
 
 
     /**
@@ -63,19 +71,34 @@ class DoctorReviewController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    public function edit(DoctorReview $review)
+{
+    if (auth()->id() !== $review->user_id) {
+        abort(403);
+    }
+
+    return view('reviews.edit', compact('review'));
+}
+
+
     public function update(Request $request, DoctorReview $review)
-    {
-        if ($request->user()->id !== $review->user_id) {
+{
+    if ($request->user()->id !== $review->user_id) {
         return response()->json(['message' => 'Forbidden'], 403);
     }
 
-        $data = $request->validate([
-            'rating' => 'sometimes|integer|min:1|max:5',
-            'comment' => 'nullable|string',
-        ]);
+    $data = $request->validate([
+        'rating' => 'required|integer|min:1|max:5',
+        'comment' => 'required|string',
+    ]);
 
-        return $this->reviewService->update($review, $data);
-    }
+    $this->reviewService->update($review, $data);
+
+    // Redirect back to the doctor show page
+    return redirect()->route('doctors.show', $review->doctor_id)
+                     ->with('success', 'Review updated successfully!');
+}
+
 
     /**
      * Remove the specified resource from storage.
@@ -83,14 +106,16 @@ class DoctorReviewController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, DoctorReview $review)
+   public function destroy(Request $request, DoctorReview $review)
 {
     if ($request->user()->id !== $review->user_id) {
-        return response()->json(['message' => 'Forbidden'], 403);
+        abort(403, 'Unauthorized action.');
     }
 
     $this->reviewService->delete($review);
-    return response()->noContent();
+
+    return redirect()->back()->with('success', 'Review deleted successfully!');
 }
+
 
 }

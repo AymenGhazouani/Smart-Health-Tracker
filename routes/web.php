@@ -34,6 +34,7 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'admin'])->name('dashboard');
     Route::resource('foods', \App\Http\Controllers\MealPlanningFt\Api\V1\FoodController::class);
+    Route::resource('psychologists', \App\Http\Controllers\PsychologyVisits\AdminPsychologistController::class);
 });
 
 require __DIR__.'/auth.php';

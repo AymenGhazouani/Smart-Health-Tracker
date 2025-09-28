@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\V1\ActivityController;
 |
 */
 require base_path('routes/MealPlan.php');
+require base_path('routes/PsychologyVisits.php');
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {

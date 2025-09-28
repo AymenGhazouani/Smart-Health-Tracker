@@ -108,12 +108,11 @@ class DoctorReviewController extends Controller
      */
    public function destroy(Request $request, DoctorReview $review)
 {
-    if ($request->user()->id !== $review->user_id) {
-        abort(403, 'Unauthorized action.');
+    if (!auth()->user()->isAdmin() && auth()->id() !== $review->user_id) {
+        return redirect()->back()->with('error', 'Unauthorized');
     }
 
-    $this->reviewService->delete($review);
-
+    $review->delete();
     return redirect()->back()->with('success', 'Review deleted successfully!');
 }
 

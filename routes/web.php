@@ -53,9 +53,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::put('/admin/doctor/{doctor}', [DoctorController::class, 'update'])->name('doctor.update');
     Route::delete('/admin/doctor/{doctor}', [DoctorController::class, 'destroy'])->name('doctor.destroy');
 
-    
+        Route::get('/admin/doctor/{doctor}/show', [DoctorController::class, 'showAdmin'])->name('doctor.showAdmin');
+
     // Optionally: specialty and review CRUD for admin
-    Route::resource('specialties', SpecialtyController::class);
+Route::get('specialties', [SpecialtyController::class, 'index'])->name('specialties.index');
     Route::resource('review', DoctorReviewController::class)->only(['index', 'destroy']);
 });
 

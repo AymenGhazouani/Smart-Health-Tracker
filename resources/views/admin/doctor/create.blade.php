@@ -16,13 +16,13 @@
         <div>
             <label class="block text-gray-700 font-semibold mb-2">Name</label>
             <input type="text" name="name" placeholder="Dr. John Doe"
-                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-{{ $color }}-400 focus:outline-none">
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-{{ $color }}-400 focus:outline-none" required>
         </div>
 
         <div>
             <label class="block text-gray-700 font-semibold mb-2">Email</label>
             <input type="email" name="email" placeholder="doctor@example.com"
-                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-{{ $color }}-400 focus:outline-none">
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-{{ $color }}-400 focus:outline-none" required>
         </div>
 
         <div>
@@ -33,7 +33,7 @@
 
         <div>
             <label class="block text-gray-700 font-semibold mb-2">Specialty</label>
-            <select name="specialty_id" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-{{ $color }}-400 focus:outline-none">
+            <select name="specialty_id" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-{{ $color }}-400 focus:outline-none" required>
                 <option value="">Select a specialty</option>
                 @foreach($specialties as $specialty)
                     <option value="{{ $specialty->id }}">{{ $specialty->name }}</option>
@@ -41,6 +41,11 @@
             </select>
         </div>
 
+        <div>
+            <label class="block text-gray-700 font-semibold mb-2">Description</label>
+            <textarea name="description" rows="4" placeholder="Write a short bio or description for the doctor..."
+                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-{{ $color }}-400 focus:outline-none"></textarea>
+        </div>
 
         <div class="text-center">
             <button type="submit" class="bg-{{ $color }}-600 hover:bg-{{ $color }}-700 text-white font-semibold px-6 py-2 rounded-lg transition duration-200">

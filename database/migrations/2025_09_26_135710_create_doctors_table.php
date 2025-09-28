@@ -21,6 +21,7 @@ return new class extends Migration
         $table->foreignId('specialty_id')->constrained()->cascadeOnDelete(); // links to specialties
         $table->string('photo')->nullable(); // store image filename or URL
         $table->decimal('rating', 3, 2)->default(0); // average rating
+        $table->text('description')->nullable();
             $table->timestamps();
         });
     }

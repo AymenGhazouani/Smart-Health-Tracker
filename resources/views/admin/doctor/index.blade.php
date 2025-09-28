@@ -1,4 +1,4 @@
-@extends('layouts.app') <!-- or your main layout -->
+@extends('layouts.app')
 
 @section('content')
 
@@ -6,17 +6,31 @@
     $colors = ['blue', 'green', 'red', 'yellow', 'purple', 'indigo', 'pink'];
 @endphp
 
-<h1 class="text-2xl font-bold mb-6">Doctors - Admin</h1>
+<!-- Action Buttons Toolbar -->
+<div class="bg-gray-50 p-4 rounded-lg shadow-md flex flex-wrap gap-3 mb-6 items-center justify-between">
+    <!-- Left: Add Doctor -->
+    <a href="{{ route('doctor.create') }}" 
+       class="flex items-center gap-2 px-5 py-2 bg-blue-600 text-white rounded-full shadow hover:bg-blue-700 transition transform hover:-translate-y-1">
+        <span>➕</span>
+        <span>Add Doctor</span>
+    </a>
 
-<a href="{{ route('doctor.create') }}" class="bg-blue-600 text-white px-4 py-2 rounded mb-4 inline-block hover:bg-blue-700 transition">
-    Add Doctor
-</a>
-<button id="addSpecialtyBtn" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
-    Add Specialty
-</button>
-<button id="viewSpecialtiesBtn" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">
-    View Specialties
-</button>
+    <!-- Right: Specialty Buttons -->
+    <div class="flex flex-wrap gap-3">
+        <button id="addSpecialtyBtn" 
+                class="flex items-center gap-2 px-5 py-2 bg-green-600 text-white rounded-full shadow hover:bg-green-700 transition transform hover:-translate-y-1">
+            <span>➕</span>
+            <span>Add Specialty</span>
+        </button>
+
+        <button id="viewSpecialtiesBtn" 
+                class="flex items-center gap-2 px-5 py-2 bg-red-600 text-white rounded-full shadow hover:bg-red-700 transition transform hover:-translate-y-1">
+            <span>👁️</span>
+            <span>View Specialties</span>
+        </button>
+    </div>
+</div>
+
 
 <!-- Add Specialty Modal -->
 <div id="addSpecialtyModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
@@ -37,39 +51,46 @@
 </div>
 
 <!-- View Specialties Modal -->
-<div id="viewSpecialtiesModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center overflow-auto">
+<!-- View Specialties Modal -->
+<div id="viewSpecialtiesModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center overflow-auto">
     <div class="bg-white rounded-lg shadow-lg w-full max-w-2xl p-6 relative">
         <h2 class="text-xl font-bold mb-4">All Specialties</h2>
+
         <div class="space-y-4 max-h-96 overflow-y-auto">
             @foreach($specialties as $specialty)
-                <div class="flex justify-between items-center bg-gray-100 p-2 rounded">
-                    <span class="specialty-name">{{ $specialty->name }}</span>
-                    <div class="flex items-center space-x-2">
-                        <!-- Edit Icon -->
-                        <button type="button" class="edit-btn text-indigo-600 hover:text-indigo-800" 
-                                data-id="{{ $specialty->id }}" data-name="{{ $specialty->name }}">
-                            ✏️
-                        </button>
+                <div class="flex flex-col bg-gray-100 p-2 rounded">
+                    <div class="flex justify-between items-center">
+                        <span class="specialty-name">{{ $specialty->name }}</span>
 
-                        <!-- Delete Icon -->
-                        <form action="{{ route('specialties.destroy', $specialty->id) }}" method="POST" onsubmit="return confirm('Are you sure?')">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="text-red-600 hover:text-red-800">🗑️</button>
-                        </form>
+                        <div class="flex items-center space-x-2">
+                            <!-- Edit button -->
+                            <button type="button" class="edit-btn text-indigo-600 hover:text-indigo-800" data-id="{{ $specialty->id }}">
+                                ✏️
+                            </button>
+
+                            <!-- Delete button -->
+                            <form action="{{ route('specialties.destroy', $specialty->id) }}" method="POST" onsubmit="return confirm('Are you sure?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="text-red-600 hover:text-red-800">🗑️</button>
+                            </form>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Hidden edit form -->
-                <form action="" method="POST" class="edit-form mt-2 hidden" id="editForm{{ $specialty->id }}">
-                    @csrf
-                    @method('PUT')
-                    <input type="text" name="name" class="border px-2 py-1 w-2/3" required>
-                    <button type="submit" class="px-2 py-1 bg-green-600 text-white rounded">Save</button>
-                    <button type="button" class="cancel-edit px-2 py-1 bg-gray-300 rounded">Cancel</button>
-                </form>
+                    <!-- Hidden inline edit form -->
+                    <form action="{{ route('specialties.update', $specialty->id) }}" method="POST" class="edit-form mt-2 hidden" id="editForm{{ $specialty->id }}">
+                        @csrf
+                        @method('PUT')
+                        <input type="text" name="name" value="{{ $specialty->name }}" class="border px-2 py-1 w-full mb-2" required>
+                        <div class="flex space-x-2">
+                            <button type="submit" class="px-2 py-1 bg-green-600 text-white rounded">Save</button>
+                            <button type="button" class="cancel-edit px-2 py-1 bg-gray-300 rounded">Cancel</button>
+                        </div>
+                    </form>
+                </div>
             @endforeach
         </div>
+
         <div class="flex justify-end mt-4">
             <button id="closeViewSpecialtiesModal" class="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400">Close</button>
         </div>
@@ -77,13 +98,13 @@
 </div>
 
 
+<!-- Doctors Grid -->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
     @foreach($doctors as $doctor)
-        @php
-            $color = $colors[$doctor->id % count($colors)];
-        @endphp
-        <div class="bg-white shadow-lg rounded-xl border-l-8 border-{{ $color }}-500 p-6 flex flex-col space-y-4">
-            <!-- Doctor Info -->
+        @php $color = $colors[$doctor->id % count($colors)]; @endphp
+        <div class="bg-white shadow-lg rounded-xl border-l-8 border-{{ $color }}-500 p-6 flex flex-col space-y-4 transition transform hover:scale-105 cursor-pointer"
+             onclick="window.location='{{ route('doctor.showAdmin', $doctor->id) }}'">
+            
             <div class="flex items-center space-x-4">
                 <img src="{{ $doctor->profile_picture ?? 'https://apps.ump.edu.my/expertDirectory/img/staff2/profile_picture.jpg' }}" 
                      alt="{{ $doctor->name }}" 
@@ -95,7 +116,6 @@
                 </div>
             </div>
 
-            <!-- Actions -->
             <div class="flex space-x-2 mt-4">
                 <a href="{{ route('doctor.edit', $doctor->id) }}" class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
                     Edit
@@ -131,6 +151,21 @@
     const closeViewSpecialties = document.getElementById('closeViewSpecialtiesModal');
     viewSpecialtiesBtn.onclick = () => viewSpecialtiesModal.classList.remove('hidden');
     closeViewSpecialties.onclick = () => viewSpecialtiesModal.classList.add('hidden');
+
+    // Inline Edit
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const id = btn.dataset.id;
+            document.querySelectorAll('.edit-form').forEach(f => f.classList.add('hidden'));
+            document.getElementById(`editForm${id}`).classList.remove('hidden');
+        });
+    });
+
+    document.querySelectorAll('.cancel-edit').forEach(btn => {
+        btn.addEventListener('click', () => {
+            btn.closest('.edit-form').classList.add('hidden');
+        });
+    });
 </script>
 
 @endsection

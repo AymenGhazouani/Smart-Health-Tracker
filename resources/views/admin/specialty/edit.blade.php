@@ -4,10 +4,20 @@
 
         <div class="flex space-x-2 mt-4">
             <!-- Edit button -->
-            <a href="{{ route('specialties.edit', $specialty->id) }}" 
-               class="px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition">
-               Edit
-            </a>
+           <form action="{{ route('specialties.update', $specialty->id) }}" method="POST" class="edit-form mt-2 hidden" id="editForm{{ $specialty->id }}">
+    @csrf
+    @method('PUT')
+    <input type="text" name="name" value="{{ $specialty->name }}" class="border px-2 py-1 w-2/3" required>
+    <button type="submit" class="px-2 py-1 bg-green-600 text-white rounded">Save</button>
+    <button type="button" class="cancel-edit px-2 py-1 bg-gray-300 rounded">Cancel</button>
+</form>
+<button type="button" class="edit-btn px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition" 
+        data-id="{{ $specialty->id }}" data-name="{{ $specialty->name }}">
+    Edit
+</button>
+
+
+
 
             <!-- Delete button -->
             <form action="{{ route('specialties.destroy', $specialty->id) }}" method="POST" 

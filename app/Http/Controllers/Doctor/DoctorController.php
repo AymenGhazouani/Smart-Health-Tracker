@@ -94,8 +94,8 @@ public function create()
         'name' => 'required|string|max:255',
         'email' => 'required|email|unique:doctors,email',
         'specialty_id' => 'required|exists:specialties,id',
-        'phone' => 'nullable|string|max:20',
-        'bio' => 'nullable|string',
+        'phone' => 'nullable|string|max:8|min:8',
+        'description' => 'nullable|string',
     ]);
 
     $doctor = Doctor::create($data);
@@ -159,6 +159,13 @@ public function show(Doctor $doctor)
      * @return \Illuminate\Http\Response
      */
 
+      public function showAdmin(Doctor $doctor)
+    {
+        // Eager load relationships like specialty and reviews
+        $doctor->load('specialty', 'reviews.user');
+
+        return view('admin.doctor.show', compact('doctor'));
+    }
     public function update(Request $request, Doctor $doctor)
 {
     if (!$request->user()->isAdmin()) {
@@ -169,8 +176,8 @@ public function show(Doctor $doctor)
         'name' => 'sometimes|string|max:255',
         'email' => 'sometimes|email|unique:doctors,email,' . $doctor->id,
          'specialty_id' => 'sometimes|exists:specialties,id',
-        'phone' => 'nullable|string|max:20',
-        'bio' => 'nullable|string',
+        'phone' => 'nullable|string|max:8|min:8',
+        'description' => 'nullable|string',
     ]);
 
     $this->doctorService->update($doctor, $data);

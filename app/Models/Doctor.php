@@ -13,6 +13,7 @@ class Doctor extends Model
         'email',
         'specialty_id',
         'phone',
+        'description'
     ];
 
     public function specialty()

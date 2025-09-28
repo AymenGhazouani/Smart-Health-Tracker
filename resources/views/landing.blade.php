@@ -156,9 +156,15 @@
                         <h3 class="ml-4 text-lg font-semibold text-gray-900">Psychology Visits</h3>
                     </div>
                     <p class="text-gray-600 mb-4">Access mental health support and schedule sessions with licensed therapists.</p>
-                    <button class="w-full bg-pink-600 hover:bg-pink-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out">
-                        Schedule Session
-                    </button>
+                    @auth
+                        <a href="{{ route('psychology.dashboard') }}" class="w-full bg-pink-600 hover:bg-pink-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out inline-block text-center">
+                            Schedule Session
+                        </a>
+                    @else
+                        <a href="{{ route('login') }}" class="w-full bg-pink-600 hover:bg-pink-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out inline-block text-center">
+                            Login to Schedule Session
+                        </a>
+                    @endauth
                 </div>
             </div>
 

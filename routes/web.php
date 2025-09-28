@@ -20,7 +20,7 @@ Route::get('/', function () {
         if (auth()->user()->isAdmin()) {
             return redirect()->route('admin.dashboard');
         }
-        return redirect()->route('dashboard');
+        return redirect()->route('psychology.dashboard');
     }
     return view('welcome');
 })->name('welcome');
@@ -28,6 +28,24 @@ Route::get('/', function () {
 // Protected routes for authenticated users
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    
+    // Client Psychology Visits Routes
+    Route::prefix('psychology')->name('psychology.')->group(function () {
+        Route::get('/dashboard', [\App\Http\Controllers\PsychologyVisits\ClientPsychologyController::class, 'dashboard'])->name('dashboard');
+        
+        // Psychologists
+        Route::get('/psychologists', [\App\Http\Controllers\PsychologyVisits\ClientPsychologyController::class, 'psychologists'])->name('psychologists');
+        Route::get('/psychologists/{id}', [\App\Http\Controllers\PsychologyVisits\ClientPsychologyController::class, 'showPsychologist'])->name('psychologists.show');
+        
+        // Sessions
+        Route::get('/sessions', [\App\Http\Controllers\PsychologyVisits\ClientPsychologyController::class, 'sessions'])->name('sessions');
+        Route::get('/sessions/{id}', [\App\Http\Controllers\PsychologyVisits\ClientPsychologyController::class, 'showSession'])->name('sessions.show');
+        Route::post('/sessions/{id}/cancel', [\App\Http\Controllers\PsychologyVisits\ClientPsychologyController::class, 'cancelSession'])->name('sessions.cancel');
+        
+        // Booking
+        Route::get('/book-session', [\App\Http\Controllers\PsychologyVisits\ClientPsychologyController::class, 'bookSession'])->name('book-session');
+        Route::post('/sessions', [\App\Http\Controllers\PsychologyVisits\ClientPsychologyController::class, 'storeSession'])->name('sessions.store');
+    });
 });
 
 // Admin-only routes

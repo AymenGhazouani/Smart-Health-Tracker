@@ -94,7 +94,7 @@
                             </div>
 
                             @if($psychologist->bio)
-                                <p class="text-sm text-gray-600 mb-4">{{ Str::limit($psychologist->bio, 120) }}</p>
+                                <p class="text-sm text-gray-600 mb-4">{{ str_limit($psychologist->bio, 120) }}</p>
                             @endif
 
                             <div class="space-y-2 mb-4">

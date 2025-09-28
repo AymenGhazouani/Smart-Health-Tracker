@@ -6,6 +6,7 @@ use App\Models\Psychologist;
 use App\Models\PsySession;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
@@ -14,7 +15,7 @@ class PsychologistService
     /**
      * Get all psychologists with optional filters
      */
-    public function getAllPsychologists(array $filters = []): Collection
+    public function getAllPsychologists(array $filters = [], int $perPage = 15): LengthAwarePaginator
     {
         $query = Psychologist::active();
 
@@ -39,9 +40,17 @@ class PsychologistService
             });
         }
 
+        // Filter by price range
+        if (isset($filters['min_price'])) {
+            $query->where('hourly_rate', '>=', $filters['min_price']);
+        }
+        if (isset($filters['max_price'])) {
+            $query->where('hourly_rate', '<=', $filters['max_price']);
+        }
+
         return $query->with(['sessions' => function ($q) {
             $q->whereIn('status', ['booked', 'confirmed', 'in_progress']);
-        }])->get();
+        }])->paginate($perPage);
     }
 
     /**

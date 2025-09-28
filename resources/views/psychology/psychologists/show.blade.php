@@ -94,9 +94,9 @@
                                         <div class="border border-gray-200 rounded-lg p-4">
                                             <h4 class="font-medium text-gray-900 mb-2">{{ ucfirst($day) }}</h4>
                                             <div class="space-y-1">
-                                                @foreach($times as $time)
+                                                @foreach($times as $timeSlot)
                                                     <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded mr-1 mb-1">
-                                                        {{ $time }}
+                                                        {{ $timeSlot['start'] }} - {{ $timeSlot['end'] }}
                                                     </span>
                                                 @endforeach
                                             </div>

@@ -6,6 +6,7 @@ use App\Models\PsySession;
 use App\Models\Psychologist;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
@@ -14,7 +15,7 @@ class PsySessionService
     /**
      * Get all sessions with optional filters
      */
-    public function getAllSessions(array $filters = []): Collection
+    public function getAllSessions(array $filters = [], int $perPage = 15): LengthAwarePaginator
     {
         $query = PsySession::with(['psychologist', 'patient']);
 
@@ -48,7 +49,7 @@ class PsySessionService
             $query->past();
         }
 
-        return $query->orderBy('start_time', 'desc')->get();
+        return $query->orderBy('start_time', 'desc')->paginate($perPage);
     }
 
     /**
@@ -183,19 +184,19 @@ class PsySessionService
     /**
      * Get sessions for a specific patient
      */
-    public function getPatientSessions(int $patientId, array $filters = []): Collection
+    public function getPatientSessions(int $patientId, array $filters = [], int $perPage = 15): LengthAwarePaginator
     {
         $filters['patient_id'] = $patientId;
-        return $this->getAllSessions($filters);
+        return $this->getAllSessions($filters, $perPage);
     }
 
     /**
      * Get sessions for a specific psychologist
      */
-    public function getPsychologistSessions(int $psychologistId, array $filters = []): Collection
+    public function getPsychologistSessions(int $psychologistId, array $filters = [], int $perPage = 15): LengthAwarePaginator
     {
         $filters['psychologist_id'] = $psychologistId;
-        return $this->getAllSessions($filters);
+        return $this->getAllSessions($filters, $perPage);
     }
 
     /**

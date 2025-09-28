@@ -154,7 +154,7 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {{ $session->notes ? Str::limit($session->notes, 30) : 'No notes' }}
+                                {{ $session->notes ? str_limit($session->notes, 30) : 'No notes' }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <div class="flex justify-end space-x-2">

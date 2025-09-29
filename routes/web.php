@@ -2,6 +2,9 @@
 
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Doctor\DoctorController;
+use App\Http\Controllers\Doctor\SpecialtyController;
+use App\Http\Controllers\Doctor\DoctorReviewController;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,7 +58,20 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/book-session', [\App\Http\Controllers\PsychologyVisits\ClientPsychologyController::class, 'bookSession'])->name('book-session');
         Route::post('/sessions', [\App\Http\Controllers\PsychologyVisits\ClientPsychologyController::class, 'storeSession'])->name('sessions.store');
     });
+
+    // Specialties CRUD
+    Route::resource('specialties', SpecialtyController::class);
+
+    // Doctors CRUD
+    Route::resource('doctors', DoctorController::class);
+
+    // Reviews CRUD
+    Route::resource('reviews', DoctorReviewController::class);
 });
+
+// Optionally: specialty and review CRUD for admin
+Route::get('specialties', [SpecialtyController::class, 'index'])->name('specialties.index');
+Route::resource('review', DoctorReviewController::class)->only(['index', 'destroy']);
 
 // Admin-only routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -77,6 +93,14 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('psy-sessions/{psy_session}/notes/{note}/edit', [\App\Http\Controllers\PsychologyVisits\AdminPsyNoteController::class, 'edit'])->name('psy-sessions.notes.edit');
     Route::put('psy-sessions/{psy_session}/notes/{note}', [\App\Http\Controllers\PsychologyVisits\AdminPsyNoteController::class, 'update'])->name('psy-sessions.notes.update');
     Route::delete('psy-sessions/{psy_session}/notes/{note}', [\App\Http\Controllers\PsychologyVisits\AdminPsyNoteController::class, 'destroy'])->name('psy-sessions.notes.destroy');
+
+    Route::get('/admin/doctor', [DoctorController::class, 'index'])->name('doctor.index');
+    Route::get('/admin/doctor/create', [DoctorController::class, 'create'])->name('doctor.create');
+    Route::post('/admin/doctor', [DoctorController::class, 'store'])->name('doctor.store');
+    Route::get('/admin/doctor/{doctor}/edit', [DoctorController::class, 'edit'])->name('doctor.edit');
+    Route::put('/admin/doctor/{doctor}', [DoctorController::class, 'update'])->name('doctor.update');
+    Route::delete('/admin/doctor/{doctor}', [DoctorController::class, 'destroy'])->name('doctor.destroy');
+    Route::get('/admin/doctor/{doctor}/show', [DoctorController::class, 'showAdmin'])->name('doctor.showAdmin');
 
     // Notes Management (standalone)
     Route::get('psy-notes', [\App\Http\Controllers\PsychologyVisits\AdminPsyNoteController::class, 'index'])->name('psy-notes.index');

@@ -185,9 +185,9 @@
                         <h3 class="ml-4 text-lg font-semibold text-gray-900">Doctor Recommendations</h3>
                     </div>
                     <p class="text-gray-600 mb-4">Find and connect with healthcare providers based on your location and needs.</p>
-                    <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out">
-                        Find Doctors
-                    </button>
+                     <a href="{{ route('doctors.index') }}" class="w-full inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-md text-center transition duration-150 ease-in-out">
+                Find Doctors
+            </a>
                 </div>
             </div>
 

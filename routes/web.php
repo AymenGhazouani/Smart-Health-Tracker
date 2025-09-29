@@ -23,7 +23,7 @@ Route::get('/', function () {
         if (auth()->user()->isAdmin()) {
             return redirect()->route('admin.dashboard');
         }
-        return redirect()->route('dashboard');
+        return redirect()->route('psychology.dashboard');
     }
     return view('welcome');
 })->name('welcome');
@@ -40,12 +40,49 @@ Route::middleware(['auth'])->group(function () {
     // Reviews CRUD
     Route::resource('reviews', DoctorReviewController::class);
 });
-
-// Admin-only routes
-Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/admin/dashboard', [DashboardController::class, 'admin'])->name('admin.dashboard');
+    // Optionally: specialty and review CRUD for admin
+Route::get('specialties', [SpecialtyController::class, 'index'])->name('specialties.index');
+    Route::resource('review', DoctorReviewController::class)->only(['index', 'destroy']);
+    
+    // Client Psychology Visits Routes
     
 
+        Route::get('/dashboard', [\App\Http\Controllers\PsychologyVisits\ClientPsychologyController::class, 'dashboard'])->name('dashboard');
+        
+        // Psychologists
+        Route::get('/psychologists', [\App\Http\Controllers\PsychologyVisits\ClientPsychologyController::class, 'psychologists'])->name('psychologists');
+        Route::get('/psychologists/{id}', [\App\Http\Controllers\PsychologyVisits\ClientPsychologyController::class, 'showPsychologist'])->name('psychologists.show');
+        
+        // Sessions
+        Route::get('/sessions', [\App\Http\Controllers\PsychologyVisits\ClientPsychologyController::class, 'sessions'])->name('sessions');
+        Route::get('/sessions/{id}', [\App\Http\Controllers\PsychologyVisits\ClientPsychologyController::class, 'showSession'])->name('sessions.show');
+        Route::post('/sessions/{id}/cancel', [\App\Http\Controllers\PsychologyVisits\ClientPsychologyController::class, 'cancelSession'])->name('sessions.cancel');
+        
+        // Booking
+        Route::get('/book-session', [\App\Http\Controllers\PsychologyVisits\ClientPsychologyController::class, 'bookSession'])->name('book-session');
+        Route::post('/sessions', [\App\Http\Controllers\PsychologyVisits\ClientPsychologyController::class, 'storeSession'])->name('sessions.store');
+    });
+});
+
+// Admin-only routes
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'admin'])->name('dashboard');
+    Route::resource('foods', \App\Http\Controllers\MealPlanningFt\Api\V1\FoodController::class);
+    Route::resource('psychologists', \App\Http\Controllers\PsychologyVisits\AdminPsychologistController::class);
+    
+    // Psychology Sessions Management
+    Route::resource('psy-sessions', \App\Http\Controllers\PsychologyVisits\AdminPsySessionController::class);
+    Route::post('psy-sessions/{psy_session}/cancel', [\App\Http\Controllers\PsychologyVisits\AdminPsySessionController::class, 'cancel'])->name('psy-sessions.cancel');
+    Route::post('psy-sessions/{psy_session}/reschedule', [\App\Http\Controllers\PsychologyVisits\AdminPsySessionController::class, 'reschedule'])->name('psy-sessions.reschedule');
+    Route::post('psy-sessions/{psy_session}/start', [\App\Http\Controllers\PsychologyVisits\AdminPsySessionController::class, 'start'])->name('psy-sessions.start');
+    Route::post('psy-sessions/{psy_session}/complete', [\App\Http\Controllers\PsychologyVisits\AdminPsySessionController::class, 'complete'])->name('psy-sessions.complete');
+    
+    // Psychology Notes Management
+    Route::get('psy-sessions/{psy_session}/notes/create', [\App\Http\Controllers\PsychologyVisits\AdminPsyNoteController::class, 'create'])->name('psy-sessions.notes.create');
+    Route::post('psy-sessions/{psy_session}/notes', [\App\Http\Controllers\PsychologyVisits\AdminPsyNoteController::class, 'store'])->name('psy-sessions.notes.store');
+    Route::get('psy-sessions/{psy_session}/notes/{note}/edit', [\App\Http\Controllers\PsychologyVisits\AdminPsyNoteController::class, 'edit'])->name('psy-sessions.notes.edit');
+    Route::put('psy-sessions/{psy_session}/notes/{note}', [\App\Http\Controllers\PsychologyVisits\AdminPsyNoteController::class, 'update'])->name('psy-sessions.notes.update');
+    Route::delete('psy-sessions/{psy_session}/notes/{note}', [\App\Http\Controllers\PsychologyVisits\AdminPsyNoteController::class, 'destroy'])->name('psy-sessions.notes.destroy');
     Route::get('/admin/doctor', [DoctorController::class, 'index'])->name('doctor.index');
     Route::get('/admin/doctor/create', [DoctorController::class, 'create'])->name('doctor.create');
     Route::post('/admin/doctor', [DoctorController::class, 'store'])->name('doctor.store');
@@ -53,11 +90,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::put('/admin/doctor/{doctor}', [DoctorController::class, 'update'])->name('doctor.update');
     Route::delete('/admin/doctor/{doctor}', [DoctorController::class, 'destroy'])->name('doctor.destroy');
 
-        Route::get('/admin/doctor/{doctor}/show', [DoctorController::class, 'showAdmin'])->name('doctor.showAdmin');
-
-    // Optionally: specialty and review CRUD for admin
-Route::get('specialties', [SpecialtyController::class, 'index'])->name('specialties.index');
-    Route::resource('review', DoctorReviewController::class)->only(['index', 'destroy']);
+    Route::get('/admin/doctor/{doctor}/show', [DoctorController::class, 'showAdmin'])->name('doctor.showAdmin');
+    // Notes Management (standalone)
+    Route::get('psy-notes', [\App\Http\Controllers\PsychologyVisits\AdminPsyNoteController::class, 'index'])->name('psy-notes.index');
+    Route::get('psy-notes/search', [\App\Http\Controllers\PsychologyVisits\AdminPsyNoteController::class, 'search'])->name('psy-notes.search');
+    Route::get('psy-notes/statistics', [\App\Http\Controllers\PsychologyVisits\AdminPsyNoteController::class, 'statistics'])->name('psy-notes.statistics');
+    Route::get('psy-notes/export', [\App\Http\Controllers\PsychologyVisits\AdminPsyNoteController::class, 'export'])->name('psy-notes.export');
 });
 
 require __DIR__.'/auth.php';

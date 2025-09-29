@@ -7,6 +7,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Doctor\DoctorController;
 use App\Http\Controllers\Doctor\SpecialtyController;
 use App\Http\Controllers\Doctor\DoctorReviewController;
+use App\Http\Controllers\Api\V1\WeightController;
+use App\Http\Controllers\Api\V1\SleepSessionController;
+use App\Http\Controllers\Api\V1\ActivityController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -17,7 +21,13 @@ use App\Http\Controllers\Doctor\DoctorReviewController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+require base_path('routes/MealPlan.php');
+require base_path('routes/PsychologyVisits.php');
 
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
 // Public API routes
 Route::post('/register', [ApiRegisterController::class, 'register']);
 Route::post('/login', [ApiAuthController::class, 'login']);
@@ -46,4 +56,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 
 
+});
+
+    Route::prefix('v1')->group(function () {
+        Route::apiResource('weights', WeightController::class);
+        Route::apiResource('sleep-sessions', SleepSessionController::class);
+        Route::apiResource('activities', ActivityController::class);
+    });
 });

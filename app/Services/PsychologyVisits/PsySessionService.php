@@ -57,7 +57,7 @@ class PsySessionService
      */
     public function getSessionById(int $id): PsySession
     {
-        return PsySession::with(['psychologist', 'patient', 'notes'])->findOrFail($id);
+        return PsySession::with(['psychologist', 'patient', 'sessionNotes'])->findOrFail($id);
     }
 
     /**

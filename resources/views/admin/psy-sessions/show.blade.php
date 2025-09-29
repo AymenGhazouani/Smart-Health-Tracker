@@ -152,7 +152,7 @@
     </div>
 
     <!-- Session Notes -->
-    @if($session->notes->count() > 0)
+    @if($session->sessionNotes->count() > 0)
     <div class="mt-6 bg-white shadow overflow-hidden sm:rounded-lg">
         <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
             <div>
@@ -170,7 +170,7 @@
         
         <div class="px-4 py-5 sm:p-6">
             <div class="space-y-4">
-                @foreach($session->notes as $note)
+                @foreach($session->sessionNotes as $note)
                     <div class="border border-gray-200 rounded-lg p-4">
                         <div class="flex justify-between items-start">
                             <div class="flex-1">

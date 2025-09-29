@@ -23,10 +23,10 @@ class AdminPsyNoteController extends Controller
     /**
      * Show the form for creating a new note
      */
-    public function create(int $sessionId)
+    public function create(int $psy_session)
     {
         try {
-            $session = $this->sessionService->getSessionById($sessionId);
+            $session = $this->sessionService->getSessionById($psy_session);
             $session->load(['psychologist', 'patient']);
             
             return view('admin.psy-sessions.notes.create', compact('session'));
@@ -40,22 +40,40 @@ class AdminPsyNoteController extends Controller
     /**
      * Store a newly created note
      */
-    public function store(StorePsyNoteRequest $request, int $sessionId)
+    public function store(StorePsyNoteRequest $request, int $psy_session)
     {
         try {
-            // Get psychologist ID from authenticated user (assuming admin is psychologist)
-            $psychologistId = auth()->user()->id;
+            // Debug: Log the request
+            \Log::info('Note creation request', [
+                'session_id' => $psy_session,
+                'request_data' => $request->all(),
+                'user_id' => auth()->id()
+            ]);
+            
+            // Get the session to find the psychologist_id
+            $session = $this->sessionService->getSessionById($psy_session);
+            $psychologistId = $session->psychologist_id;
             
             $data = $request->validated();
-            $data['psy_session_id'] = $sessionId;
+            $data['psy_session_id'] = $psy_session;
             $data['psychologist_id'] = $psychologistId;
+            
+            // Debug: Log the processed data
+            \Log::info('Processed note data', $data);
 
             $note = $this->noteService->createNote($data);
             
-            return redirect()->route('admin.psy-sessions.show', $sessionId)
+            return redirect()->route('admin.psy-sessions.show', $psy_session)
                 ->with('success', 'Note added successfully!');
                 
         } catch (\Exception $e) {
+            \Log::error('Note creation failed', [
+                'error' => $e->getMessage(),
+                'session_id' => $psy_session,
+                'request_data' => $request->all(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
             return redirect()->back()
                 ->with('error', 'Failed to add note: ' . $e->getMessage())
                 ->withInput();
@@ -65,19 +83,19 @@ class AdminPsyNoteController extends Controller
     /**
      * Show the form for editing the specified note
      */
-    public function edit(int $sessionId, int $noteId)
+    public function edit(int $psy_session, int $note)
     {
         try {
-            $session = $this->sessionService->getSessionById($sessionId);
+            $session = $this->sessionService->getSessionById($psy_session);
             $session->load(['psychologist', 'patient']);
             
-            $psychologistId = auth()->user()->id;
-            $note = $this->noteService->getNoteById($noteId, $psychologistId);
+            $psychologistId = $session->psychologist_id;
+            $note = $this->noteService->getNoteById($note, $psychologistId);
             
             return view('admin.psy-sessions.notes.edit', compact('session', 'note'));
             
         } catch (\Exception $e) {
-            return redirect()->route('admin.psy-sessions.show', $sessionId)
+            return redirect()->route('admin.psy-sessions.show', $psy_session)
                 ->with('error', 'Note not found or access denied.');
         }
     }
@@ -85,13 +103,15 @@ class AdminPsyNoteController extends Controller
     /**
      * Update the specified note
      */
-    public function update(UpdatePsyNoteRequest $request, int $sessionId, int $noteId)
+    public function update(UpdatePsyNoteRequest $request, int $psy_session, int $note)
     {
         try {
-            $psychologistId = auth()->user()->id;
-            $note = $this->noteService->updateNote($noteId, $request->validated(), $psychologistId);
+            // Get the session to find the psychologist_id
+            $session = $this->sessionService->getSessionById($psy_session);
+            $psychologistId = $session->psychologist_id;
+            $note = $this->noteService->updateNote($note, $request->validated(), $psychologistId);
             
-            return redirect()->route('admin.psy-sessions.show', $sessionId)
+            return redirect()->route('admin.psy-sessions.show', $psy_session)
                 ->with('success', 'Note updated successfully!');
                 
         } catch (\Exception $e) {
@@ -104,11 +124,13 @@ class AdminPsyNoteController extends Controller
     /**
      * Remove the specified note
      */
-    public function destroy(Request $request, int $sessionId, int $noteId)
+    public function destroy(Request $request, int $psy_session, int $note)
     {
         try {
-            $psychologistId = auth()->user()->id;
-            $this->noteService->deleteNote($noteId, $psychologistId);
+            // Get the session to find the psychologist_id
+            $session = $this->sessionService->getSessionById($psy_session);
+            $psychologistId = $session->psychologist_id;
+            $this->noteService->deleteNote($note, $psychologistId);
 
             if ($request->expectsJson()) {
                 return response()->json([
@@ -117,7 +139,7 @@ class AdminPsyNoteController extends Controller
                 ]);
             }
             
-            return redirect()->route('admin.psy-sessions.show', $sessionId)
+            return redirect()->route('admin.psy-sessions.show', $psy_session)
                 ->with('success', 'Note deleted successfully!');
                 
         } catch (\Exception $e) {
@@ -128,7 +150,7 @@ class AdminPsyNoteController extends Controller
                 ], 500);
             }
 
-            return redirect()->route('admin.psy-sessions.show', $sessionId)
+            return redirect()->route('admin.psy-sessions.show', $psy_session)
                 ->with('error', 'Failed to delete note: ' . $e->getMessage());
         }
     }

@@ -64,6 +64,7 @@
 
                 <!-- Encryption -->
                 <div class="flex items-center">
+                    <input type="hidden" name="is_encrypted" value="0">
                     <input type="checkbox" name="is_encrypted" id="is_encrypted" value="1" {{ old('is_encrypted', true) ? 'checked' : '' }}
                            class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
                     <label for="is_encrypted" class="ml-2 block text-sm text-gray-900">

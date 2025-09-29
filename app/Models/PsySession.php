@@ -46,7 +46,7 @@ class PsySession extends Model
     /**
      * Get all notes for this session
      */
-    public function notes(): HasMany
+    public function sessionNotes(): HasMany
     {
         return $this->hasMany(PsyNote::class);
     }

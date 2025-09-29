@@ -63,7 +63,7 @@ class AdminPsySessionController extends Controller
         }
 
         $sessions = $this->sessionService->getAllSessions($filters);
-        $sessions->load(['psychologist', 'patient', 'notes']);
+        $sessions->load(['psychologist', 'patient', 'sessionNotes']);
 
         // Get data for filters
         $psychologists = $this->psychologistService->getAllPsychologists();
@@ -108,7 +108,7 @@ class AdminPsySessionController extends Controller
     {
         try {
             $session = $this->sessionService->getSessionById($id);
-            $session->load(['psychologist', 'patient', 'notes.psychologist']);
+            $session->load(['psychologist', 'patient', 'sessionNotes.psychologist']);
             
             return view('admin.psy-sessions.show', compact('session'));
             

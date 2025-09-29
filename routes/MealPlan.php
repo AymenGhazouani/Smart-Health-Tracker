@@ -1,6 +1,7 @@
 <?php 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MealPlanningFt\Api\V1\FoodController;
+use App\Http\Controllers\MealPlanningFt\Api\V1\MealController;
 /*
 |--------------------------------------------------------------------------
 | Meal Planning Routes
@@ -12,4 +13,8 @@ use App\Http\Controllers\MealPlanningFt\Api\V1\FoodController;
 */
 Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::apiResource('foods', FoodController::class);
+    Route::apiResource('meals', MealController::class);
+
+
 });
+

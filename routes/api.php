@@ -4,6 +4,12 @@ use App\Http\Controllers\Auth\ApiAuthController;
 use App\Http\Controllers\Auth\ApiRegisterController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\V1\ProviderController;
+use App\Http\Controllers\Api\V1\AvailabilitySlotController;
+use App\Http\Controllers\Api\V1\AppointmentController;
+use App\Http\Controllers\Doctor\DoctorController;
+use App\Http\Controllers\Doctor\SpecialtyController;
+use App\Http\Controllers\Doctor\DoctorReviewController;
 use App\Http\Controllers\Api\V1\WeightController;
 use App\Http\Controllers\Api\V1\SleepSessionController;
 use App\Http\Controllers\Api\V1\ActivityController;
@@ -19,6 +25,7 @@ use App\Http\Controllers\Api\V1\ActivityController;
 |
 */
 require base_path('routes/MealPlan.php');
+require base_path('routes/PsychologyVisits.php');
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
@@ -32,11 +39,47 @@ Route::post('/login', [ApiAuthController::class, 'login']);
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user', [ApiAuthController::class, 'user']);
     Route::post('/logout', [ApiAuthController::class, 'logout']);
+
+    Route::prefix('v1')->group(function () {
+
+        // Doctors CRUD
+        Route::apiResource('doctors', DoctorController::class);
+
+        // Specialties CRUD
+        Route::apiResource('specialties', SpecialtyController::class);
+
+        // Doctor Reviews
+        Route::get('doctors/{doctor}/reviews', [DoctorReviewController::class, 'index']);
+        Route::post('doctors/{doctor}/reviews', [DoctorReviewController::class, 'store']);
+
+        // Optional: review CRUD
+        Route::get('reviews/{review}', [DoctorReviewController::class, 'show']);
+        Route::put('reviews/{review}', [DoctorReviewController::class, 'update']);
+        Route::delete('reviews/{review}', [DoctorReviewController::class, 'destroy']);
+    });
+
+
 });
 
     Route::prefix('v1')->group(function () {
         Route::apiResource('weights', WeightController::class);
         Route::apiResource('sleep-sessions', SleepSessionController::class);
         Route::apiResource('activities', ActivityController::class);
+    });
+});
+
+Route::prefix('v1')->group(function () {
+    Route::get('providers', [ProviderController::class, 'index']);
+    Route::get('providers/{provider}', [ProviderController::class, 'show']);
+
+    Route::get('availability-slots', [AvailabilitySlotController::class, 'index']);
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('appointments', [AppointmentController::class, 'index']);
+        Route::post('appointments', [AppointmentController::class, 'store']);
+        Route::get('appointments/{appointment}', [AppointmentController::class, 'show']);
+        Route::put('appointments/{appointment}', [AppointmentController::class, 'update']);
+        Route::post('appointments/{appointment}/cancel', [AppointmentController::class, 'cancel']);
+        Route::get('appointments/{appointment}/summary', [AppointmentController::class, 'summary']);
     });
 });

@@ -102,9 +102,14 @@
                         <h3 class="ml-4 text-lg font-semibold text-gray-900">Nutrition & Meal Planning</h3>
                     </div>
                     <p class="text-gray-600 mb-4">Track your daily nutrition intake and plan healthy meals tailored to your goals.</p>
-                    <button class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out">
-                        View Meal Plans
-                    </button>
+                    <div class="space-y-2">
+                        <a href="{{ route('client.meals.index') }}" class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out block text-center">
+                            My Meal Plans
+                        </a>
+                        <a href="{{ route('client.meals.create') }}" class="w-full bg-green-100 hover:bg-green-200 text-green-700 font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out block text-center">
+                            Create New Meal
+                        </a>
+                    </div>
                 </div>
             </div>
 
@@ -156,9 +161,15 @@
                         <h3 class="ml-4 text-lg font-semibold text-gray-900">Psychology Visits</h3>
                     </div>
                     <p class="text-gray-600 mb-4">Access mental health support and schedule sessions with licensed therapists.</p>
-                    <button class="w-full bg-pink-600 hover:bg-pink-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out">
-                        Schedule Session
-                    </button>
+                    @auth
+                        <a href="{{ route('psychology.dashboard') }}" class="w-full bg-pink-600 hover:bg-pink-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out inline-block text-center">
+                            Schedule Session
+                        </a>
+                    @else
+                        <a href="{{ route('login') }}" class="w-full bg-pink-600 hover:bg-pink-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out inline-block text-center">
+                            Login to Schedule Session
+                        </a>
+                    @endauth
                 </div>
             </div>
 
@@ -174,9 +185,9 @@
                         <h3 class="ml-4 text-lg font-semibold text-gray-900">Doctor Recommendations</h3>
                     </div>
                     <p class="text-gray-600 mb-4">Find and connect with healthcare providers based on your location and needs.</p>
-                    <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out">
-                        Find Doctors
-                    </button>
+                     <a href="{{ route('doctors.index') }}" class="w-full inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-md text-center transition duration-150 ease-in-out">
+                Find Doctors
+            </a>
                 </div>
             </div>
 

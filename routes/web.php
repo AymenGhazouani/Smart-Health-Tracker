@@ -1,7 +1,11 @@
 <?php
 
-use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Metrics\MetricsDashboardController;
+use App\Http\Controllers\Metrics\WeightsDetailController;
+use App\Http\Controllers\Metrics\SleepDetailController;
+use App\Http\Controllers\Metrics\ActivitiesDetailController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\AvailabilitySlotController;
 use App\Http\Controllers\AppointmentController;
@@ -36,26 +40,63 @@ Route::get('/', function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Provider routes
-    Route::resource('providers', ProviderController::class);
+    /**
+     * ==============================
+     *  Metrics Routes
+     * ==============================
+     */
+    Route::get('/metrics', [MetricsDashboardController::class, 'index'])->name('metrics.dashboard');
 
-    // Availability Slots routes
+    // Weights
+    Route::get('/metrics/weights', [WeightsDetailController::class, 'index'])->name('metrics.weights');
+    Route::get('/metrics/weights/create', [WeightsDetailController::class, 'create'])->name('metrics.weights.create');
+    Route::post('/metrics/weights', [WeightsDetailController::class, 'store'])->name('metrics.weights.store');
+    Route::get('/metrics/weights/{weight}/edit', [WeightsDetailController::class, 'edit'])->name('metrics.weights.edit');
+    Route::put('/metrics/weights/{weight}', [WeightsDetailController::class, 'update'])->name('metrics.weights.update');
+    Route::delete('/metrics/weights/{weight}', [WeightsDetailController::class, 'destroy'])->name('metrics.weights.destroy');
+
+    // Sleep
+    Route::get('/metrics/sleep', [SleepDetailController::class, 'index'])->name('metrics.sleep');
+    Route::get('/metrics/sleep/create', [SleepDetailController::class, 'create'])->name('metrics.sleep.create');
+    Route::post('/metrics/sleep', [SleepDetailController::class, 'store'])->name('metrics.sleep.store');
+    Route::get('/metrics/sleep/{sleepSession}/edit', [SleepDetailController::class, 'edit'])->name('metrics.sleep.edit');
+    Route::put('/metrics/sleep/{sleepSession}', [SleepDetailController::class, 'update'])->name('metrics.sleep.update');
+    Route::delete('/metrics/sleep/{sleepSession}', [SleepDetailController::class, 'destroy'])->name('metrics.sleep.destroy');
+
+    // Activities
+    Route::get('/metrics/activities', [ActivitiesDetailController::class, 'index'])->name('metrics.activities');
+    Route::get('/metrics/activities/create', [ActivitiesDetailController::class, 'create'])->name('metrics.activities.create');
+    Route::post('/metrics/activities', [ActivitiesDetailController::class, 'store'])->name('metrics.activities.store');
+    Route::get('/metrics/activities/{activity}/edit', [ActivitiesDetailController::class, 'edit'])->name('metrics.activities.edit');
+    Route::put('/metrics/activities/{activity}', [ActivitiesDetailController::class, 'update'])->name('metrics.activities.update');
+    Route::delete('/metrics/activities/{activity}', [ActivitiesDetailController::class, 'destroy'])->name('metrics.activities.destroy');
+
+    /**
+     * ==============================
+     *  Provider & Appointments
+     * ==============================
+     */
+    Route::resource('providers', ProviderController::class);
     Route::resource('availability-slots', AvailabilitySlotController::class);
 
-    // Appointment routes
+    // Appointments
     Route::get('appointments/get-available-slots', [AppointmentController::class, 'getAvailableSlots'])
         ->name('appointments.get-available-slots');
     Route::post('appointments/{appointment}/cancel', [AppointmentController::class, 'cancel'])
         ->name('appointments.cancel');
     Route::resource('appointments', AppointmentController::class);
 
-    // Visit Summary routes
+    // Visit Summaries
     Route::get('appointments/{appointment}/visit-summary/create', [VisitSummaryController::class, 'create'])
         ->name('visit-summaries.create');
     Route::resource('visit-summaries', VisitSummaryController::class)
         ->except(['index', 'create', 'destroy']);
 
-    // ✅ Client meal planning routes
+    /**
+     * ==============================
+     *  Client Meal Planning
+     * ==============================
+     */
     Route::prefix('meals')->name('client.meals.')->group(function () {
         Route::get('/', [\App\Http\Controllers\Client\MealPlanController::class, 'index'])->name('index');
         Route::get('/foods', [\App\Http\Controllers\Client\MealPlanController::class, 'foods'])->name('foods');
@@ -64,7 +105,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{id}', [\App\Http\Controllers\Client\MealPlanController::class, 'show'])->name('show');
     });
 
-    // ✅ Client psychology visits routes
+    /**
+     * ==============================
+     *  Client Psychology
+     * ==============================
+     */
     Route::prefix('psychology')->name('psychology.')->group(function () {
         Route::get('/dashboard', [\App\Http\Controllers\PsychologyVisits\ClientPsychologyController::class, 'dashboard'])->name('dashboard');
 
@@ -82,17 +127,17 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/sessions', [\App\Http\Controllers\PsychologyVisits\ClientPsychologyController::class, 'storeSession'])->name('sessions.store');
     });
 
-    // Specialties CRUD
+    /**
+     * ==============================
+     *  Doctors & Reviews
+     * ==============================
+     */
     Route::resource('specialties', SpecialtyController::class);
-
-    // Doctors CRUD
     Route::resource('doctors', DoctorController::class);
-
-    // Reviews CRUD
     Route::resource('reviews', DoctorReviewController::class);
 });
 
-// Optionally: specialty and review CRUD for admin
+// Public specialty & review browsing
 Route::get('specialties', [SpecialtyController::class, 'index'])->name('specialties.index');
 Route::resource('review', DoctorReviewController::class)->only(['index', 'destroy']);
 
@@ -101,7 +146,28 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/dashboard', [DashboardController::class, 'admin'])->name('dashboard');
     Route::resource('foods', \App\Http\Controllers\MealPlanningFt\Api\V1\FoodController::class);
 
-    // Admin specific provider management
+    /**
+     * ==============================
+     *  Admin Metrics
+     * ==============================
+     */
+    Route::get('/metrics', [\App\Http\Controllers\Admin\Metrics\AdminMetricsController::class, 'index'])->name('metrics.dashboard');
+
+    // Admin metrics per-user + notify
+    Route::get('/metrics/{user}/weights', [\App\Http\Controllers\Admin\Metrics\AdminWeightsController::class, 'index'])->name('metrics.weights.index');
+    Route::post('/metrics/{user}/weights/notify', [\App\Http\Controllers\Admin\Metrics\AdminWeightsController::class, 'notifyUser'])->name('metrics.weights.notify');
+
+    Route::get('/metrics/{user}/sleep', [\App\Http\Controllers\Admin\Metrics\AdminSleepController::class, 'index'])->name('metrics.sleep.index');
+    Route::post('/metrics/{user}/sleep/notify', [\App\Http\Controllers\Admin\Metrics\AdminSleepController::class, 'notifyUser'])->name('metrics.sleep.notify');
+
+    Route::get('/metrics/{user}/activities', [\App\Http\Controllers\Admin\Metrics\AdminActivitiesController::class, 'index'])->name('metrics.activities.index');
+    Route::post('/metrics/{user}/activities/notify', [\App\Http\Controllers\Admin\Metrics\AdminActivitiesController::class, 'notifyUser'])->name('metrics.activities.notify');
+
+    /**
+     * ==============================
+     *  Admin Providers & Appointments
+     * ==============================
+     */
     Route::resource('providers', ProviderController::class);
     Route::get('/appointments', [AppointmentController::class, 'adminIndex'])->name('appointments.index');
 
@@ -122,19 +188,25 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::put('psy-sessions/{psy_session}/notes/{note}', [\App\Http\Controllers\PsychologyVisits\AdminPsyNoteController::class, 'update'])->name('psy-sessions.notes.update');
     Route::delete('psy-sessions/{psy_session}/notes/{note}', [\App\Http\Controllers\PsychologyVisits\AdminPsyNoteController::class, 'destroy'])->name('psy-sessions.notes.destroy');
 
-    Route::get('/admin/doctor', [DoctorController::class, 'index'])->name('doctor.index');
-    Route::get('/admin/doctor/create', [DoctorController::class, 'create'])->name('doctor.create');
-    Route::post('/admin/doctor', [DoctorController::class, 'store'])->name('doctor.store');
-    Route::get('/admin/doctor/{doctor}/edit', [DoctorController::class, 'edit'])->name('doctor.edit');
-    Route::put('/admin/doctor/{doctor}', [DoctorController::class, 'update'])->name('doctor.update');
-    Route::delete('/admin/doctor/{doctor}', [DoctorController::class, 'destroy'])->name('doctor.destroy');
-    Route::get('/admin/doctor/{doctor}/show', [DoctorController::class, 'showAdmin'])->name('doctor.showAdmin');
-
-    // Notes Management (standalone)
+    // Standalone Notes
     Route::get('psy-notes', [\App\Http\Controllers\PsychologyVisits\AdminPsyNoteController::class, 'index'])->name('psy-notes.index');
     Route::get('psy-notes/search', [\App\Http\Controllers\PsychologyVisits\AdminPsyNoteController::class, 'search'])->name('psy-notes.search');
     Route::get('psy-notes/statistics', [\App\Http\Controllers\PsychologyVisits\AdminPsyNoteController::class, 'statistics'])->name('psy-notes.statistics');
     Route::get('psy-notes/export', [\App\Http\Controllers\PsychologyVisits\AdminPsyNoteController::class, 'export'])->name('psy-notes.export');
+
+    /**
+     * ==============================
+     *  Admin Doctors
+     * ==============================
+     */
+    Route::get('/doctor', [DoctorController::class, 'index'])->name('doctor.index');
+    Route::get('/doctor/create', [DoctorController::class, 'create'])->name('doctor.create');
+    Route::post('/doctor', [DoctorController::class, 'store'])->name('doctor.store');
+    Route::get('/doctor/{doctor}/edit', [DoctorController::class, 'edit'])->name('doctor.edit');
+    Route::put('/doctor/{doctor}', [DoctorController::class, 'update'])->name('doctor.update');
+    Route::delete('/doctor/{doctor}', [DoctorController::class, 'destroy'])->name('doctor.destroy');
+    Route::get('/doctor/{doctor}/show', [DoctorController::class, 'showAdmin'])->name('doctor.showAdmin');
 });
 
 require __DIR__.'/auth.php';
+

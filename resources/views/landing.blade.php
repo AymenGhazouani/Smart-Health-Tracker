@@ -102,9 +102,14 @@
                         <h3 class="ml-4 text-lg font-semibold text-gray-900">Nutrition & Meal Planning</h3>
                     </div>
                     <p class="text-gray-600 mb-4">Track your daily nutrition intake and plan healthy meals tailored to your goals.</p>
-                    <button class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out">
-                        View Meal Plans
-                    </button>
+                    <div class="space-y-2">
+                        <a href="{{ route('client.meals.index') }}" class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out block text-center">
+                            My Meal Plans
+                        </a>
+                        <a href="{{ route('client.meals.create') }}" class="w-full bg-green-100 hover:bg-green-200 text-green-700 font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out block text-center">
+                            Create New Meal
+                        </a>
+                    </div>
                 </div>
             </div>
 

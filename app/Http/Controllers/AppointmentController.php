@@ -37,12 +37,14 @@ class AppointmentController extends Controller
         return view('appointments.create', compact('providers'));
     }
 
+    // app/Http/Controllers/AppointmentController.php
+
     public function getAvailableSlots(Request $request)
     {
         $provider_id = $request->provider_id;
+
         $slots = AvailabilitySlot::where('provider_id', $provider_id)
             ->where('is_booked', false)
-            ->where('start_time', '>', now())
             ->orderBy('start_time')
             ->get();
 

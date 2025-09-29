@@ -33,6 +33,10 @@ Route::get('/', function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/metrics', [MetricsDashboardController::class, 'index'])->name('metrics.dashboard');
+    // Notifications
+    Route::get('/notifications', [\App\Http\Controllers\NotificationsController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/{id}/read', [\App\Http\Controllers\NotificationsController::class, 'markAsRead'])->name('notifications.read');
+    Route::post('/notifications/read-all', [\App\Http\Controllers\NotificationsController::class, 'markAllAsRead'])->name('notifications.readAll');
     
     // User metrics routes
     Route::get('/metrics/weights', [WeightsDetailController::class, 'index'])->name('metrics.weights');

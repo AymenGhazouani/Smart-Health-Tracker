@@ -47,6 +47,13 @@ Route::middleware(['auth'])->group(function () {
      */
     Route::get('/metrics', [MetricsDashboardController::class, 'index'])->name('metrics.dashboard');
 
+    // Notifications
+    Route::get('/notifications', [\App\Http\Controllers\NotificationsController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/{id}/read', [\App\Http\Controllers\NotificationsController::class, 'markAsRead'])->name('notifications.read');
+    Route::post('/notifications/read-all', [\App\Http\Controllers\NotificationsController::class, 'markAllAsRead'])->name('notifications.readAll');
+    
+    // User metrics routes
+
     // Weights
     Route::get('/metrics/weights', [WeightsDetailController::class, 'index'])->name('metrics.weights');
     Route::get('/metrics/weights/create', [WeightsDetailController::class, 'create'])->name('metrics.weights.create');

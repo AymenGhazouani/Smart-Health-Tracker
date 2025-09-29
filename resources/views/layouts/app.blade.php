@@ -13,6 +13,8 @@
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="//unpkg.com/alpinejs" defer></script>
+
 </head>
 <body class="font-sans antialiased bg-gray-50">
     <div class="min-h-screen">

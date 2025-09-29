@@ -61,7 +61,7 @@ public function update(Request $request, Specialty $specialty)
 
     $this->specialtyService->update($specialty, $data);
 
-    return redirect()->route('doctor.index')->with('success', 'Specialty updated successfully!');
+    return redirect()->route('admin.doctor.index')->with('success', 'Specialty updated successfully!');
 }
 
 public function destroy(Request $request, Specialty $specialty)

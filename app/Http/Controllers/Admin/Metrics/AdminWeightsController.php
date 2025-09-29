@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Metrics;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Weight;
+use App\Notifications\MetricsReminderNotification;
 use Illuminate\Http\Request;
 
 class AdminWeightsController extends Controller
@@ -15,45 +16,16 @@ class AdminWeightsController extends Controller
         return view('admin.metrics.weights.index', compact('user', 'weights'));
     }
 
-    public function create(User $user)
+    public function notifyUser(Request $request, User $user)
     {
-        return view('admin.metrics.weights.create', compact('user'));
-    }
-
-    public function store(Request $request, User $user)
-    {
-        $data = $request->validate([
-            'value_kg' => ['required','numeric','between:1,500'],
-            'measured_at' => ['required','date'],
-            'note' => ['nullable','string','max:255'],
+        $request->validate([
+            'message' => ['nullable','string','max:255'],
         ]);
-        Weight::create($data + ['user_id' => $user->id]);
-        return redirect()->route('admin.metrics.weights.index', $user)->with('success', 'Weight added');
-    }
 
-    public function edit(User $user, Weight $weight)
-    {
-        abort_unless($weight->user_id === $user->id, 404);
-        return view('admin.metrics.weights.edit', compact('user','weight'));
-    }
+        $message = $request->input('message') ?: 'Please log a recent weight entry to keep your metrics up to date.';
+        $user->notify(new MetricsReminderNotification('weight', $message));
 
-    public function update(Request $request, User $user, Weight $weight)
-    {
-        abort_unless($weight->user_id === $user->id, 404);
-        $data = $request->validate([
-            'value_kg' => ['required','numeric','between:1,500'],
-            'measured_at' => ['required','date'],
-            'note' => ['nullable','string','max:255'],
-        ]);
-        $weight->update($data);
-        return redirect()->route('admin.metrics.weights.index', $user)->with('success', 'Weight updated');
-    }
-
-    public function destroy(User $user, Weight $weight)
-    {
-        abort_unless($weight->user_id === $user->id, 404);
-        $weight->delete();
-        return redirect()->route('admin.metrics.weights.index', $user)->with('success', 'Weight deleted');
+        return back()->with('success', 'User has been notified about weight updates.');
     }
 }
 

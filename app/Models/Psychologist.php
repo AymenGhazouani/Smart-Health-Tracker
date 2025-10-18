@@ -28,6 +28,23 @@ class Psychologist extends Model
     ];
 
     /**
+     * Validation rules for the model
+     */
+    public static function validationRules(): array
+    {
+        return [
+            'name' => 'required|string|max:255|min:2',
+            'email' => 'required|email|unique:psychologists,email|max:255',
+            'phone' => 'nullable|string|max:20|regex:/^[\+]?[0-9\s\-\(\)]+$/',
+            'specialty' => 'required|string|max:255|min:2',
+            'bio' => 'nullable|string|max:1000',
+            'availability' => 'nullable|array',
+            'hourly_rate' => 'nullable|numeric|min:0|max:999999.99',
+            'is_active' => 'boolean',
+        ];
+    }
+
+    /**
      * Get all sessions for this psychologist
      */
     public function sessions(): HasMany

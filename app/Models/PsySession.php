@@ -28,6 +28,22 @@ class PsySession extends Model
     ];
 
     /**
+     * Validation rules for the model
+     */
+    public static function validationRules(): array
+    {
+        return [
+            'psychologist_id' => 'required|exists:psychologists,id',
+            'patient_id' => 'required|exists:users,id',
+            'start_time' => 'required|date|after:now',
+            'end_time' => 'nullable|date|after:start_time',
+            'status' => 'sometimes|in:booked,confirmed,in_progress,completed,cancelled,no_show',
+            'notes' => 'nullable|string|max:1000',
+            'session_fee' => 'nullable|numeric|min:0|max:999999.99',
+        ];
+    }
+
+    /**
      * Get the psychologist for this session
      */
     public function psychologist(): BelongsTo

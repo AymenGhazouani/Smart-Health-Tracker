@@ -7,6 +7,23 @@ pipeline {
     }
 
     stages {
+        stage('Ensure master') {
+            steps {
+                script {
+                    // Prefer BRANCH_NAME (multibranch), fallback to GIT_BRANCH if present
+                    def branch = env.BRANCH_NAME ?: env.GIT_BRANCH
+                    if (!branch) {
+                        // If neither is set, fail explicitly to avoid accidental runs
+                        error "Cannot determine branch. Pipeline allowed only on 'master'."
+                    }
+                    // normalize possible prefixes like origin/master
+                    if (!branch.tokenize('/').last().equals('master')) {
+                        error "Pipeline is allowed only on 'master'. Current branch: ${branch}"
+                    }
+                }
+            }
+        }
+
         stage('Checkout') {
             steps {
                 git branch: 'master',
@@ -39,7 +56,7 @@ pipeline {
 
     post {
         success {
-            echo 'Deployment successful! Access your app at http://172.21.16.200/:' + env.APP_PORT
+            echo 'Deployment successful! Access your app at http://<VM-IP>:' + env.APP_PORT
         }
         failure {
             echo 'Deployment failed!'
@@ -47,3 +64,4 @@ pipeline {
         }
     }
 }
+

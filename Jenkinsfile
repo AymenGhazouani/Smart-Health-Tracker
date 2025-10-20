@@ -9,9 +9,8 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main',
-                    url: 'https://github.com/YOUR_USERNAME/YOUR_REPO.git',
-                    credentialsId: 'github-credentials'
+                git branch: 'master',
+                    url: 'hhttps://github.com/AymenGhazouani/Smart-Health-Tracker',
             }
         }
 
@@ -40,7 +39,7 @@ pipeline {
 
     post {
         success {
-            echo 'Deployment successful! Access your app at http://<VM-IP>:' + env.APP_PORT
+            echo 'Deployment successful! Access your app at http://172.21.16.200/:' + env.APP_PORT
         }
         failure {
             echo 'Deployment failed!'

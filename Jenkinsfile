@@ -26,8 +26,9 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git branch: 'master',
-                    url: 'hhttps://github.com/AymenGhazouani/Smart-Health-Tracker',
+                git branch: 'main',
+                    url: 'https://github.com/AymenGhazouani/Smart-Health-Tracker',
+
             }
         }
 

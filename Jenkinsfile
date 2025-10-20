@@ -7,18 +7,18 @@ pipeline {
     }
 
     stages {
-        stage('Ensure master') {
+        stage('Ensure main') {
             steps {
                 script {
                     // Prefer BRANCH_NAME (multibranch), fallback to GIT_BRANCH if present
                     def branch = env.BRANCH_NAME ?: env.GIT_BRANCH
                     if (!branch) {
                         // If neither is set, fail explicitly to avoid accidental runs
-                        error "Cannot determine branch. Pipeline allowed only on 'master'."
+                        error "Cannot determine branch. Pipeline allowed only on 'main'."
                     }
-                    // normalize possible prefixes like origin/master
-                    if (!branch.tokenize('/').last().equals('master')) {
-                        error "Pipeline is allowed only on 'master'. Current branch: ${branch}"
+                    // normalize possible prefixes like origin/main
+                    if (!branch.tokenize('/').last().equals('main')) {
+                        error "Pipeline is allowed only on 'main'. Current branch: ${branch}"
                     }
                 }
             }
@@ -27,8 +27,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 git branch: 'main',
-                    url: 'https://github.com/AymenGhazouani/Smart-Health-Tracker',
-
+                    url: 'https://github.com/AymenGhazouani/Smart-Health-Tracker'
             }
         }
 
@@ -65,4 +64,3 @@ pipeline {
         }
     }
 }
-

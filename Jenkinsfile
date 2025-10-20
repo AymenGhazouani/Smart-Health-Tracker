@@ -3,22 +3,19 @@ pipeline {
 
     environment {
         COMPOSE_PROJECT_NAME = "laravel-app"
-        APP_PORT = "8081"  // Different port for your Laravel app
+        APP_PORT = "8081"
     }
 
     stages {
-        stage('Ensure main') {
+        stage('Ensure allowed branch') {
             steps {
                 script {
-                    // Prefer BRANCH_NAME (multibranch), fallback to GIT_BRANCH if present
-                    def branch = env.BRANCH_NAME ?: env.GIT_BRANCH
+                    def branch = (env.BRANCH_NAME ?: env.GIT_BRANCH)?.tokenize('/').last()
                     if (!branch) {
-                        // If neither is set, fail explicitly to avoid accidental runs
-                        error "Cannot determine branch. Pipeline allowed only on 'main'."
+                        error "Cannot determine branch. Pipeline allowed only on 'main' or 'master'."
                     }
-                    // normalize possible prefixes like origin/main
-                    if (!branch.tokenize('/').last().equals('main')) {
-                        error "Pipeline is allowed only on 'main'. Current branch: ${branch}"
+                    if (!(branch == 'main' || branch == 'master')) {
+                        error "Pipeline is allowed only on 'main' or 'master'. Current branch: ${branch}"
                     }
                 }
             }
@@ -26,25 +23,20 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git branch: 'main',
-                    url: 'https://github.com/AymenGhazouani/Smart-Health-Tracker',
-                    credentialsId: 'GITHUB_CREDS'
+                git branch: 'master',
+                    url: 'https://github.com/AymenGhazouani/Smart-Health-Tracker.git'
             }
         }
 
         stage('Stop Old Containers') {
             steps {
-                sh '''
-                    docker compose down || true
-                '''
+                sh 'docker compose down || true'
             }
         }
 
         stage('Build and Deploy') {
             steps {
-                sh '''
-                    docker compose up -d --build
-                '''
+                sh 'docker compose up -d --build'
             }
         }
 
@@ -57,7 +49,7 @@ pipeline {
 
     post {
         success {
-            echo 'Deployment successful! Access your app at http://<VM-IP>:' + env.APP_PORT
+            echo "Deployment successful! Access your app at http://<VM-IP>:\${APP_PORT}"
         }
         failure {
             echo 'Deployment failed!'

@@ -7,6 +7,7 @@
     $color = $colors[$doctor->id % count($colors)];
 @endphp
 
+
 <div class="max-w-6xl mx-auto mt-8 flex flex-col lg:flex-row gap-8 
             bg-gradient-to-r from-gray-100 via-white to-gray-100 p-6 rounded-xl shadow-lg">
     <!-- Left: Picture + Info -->

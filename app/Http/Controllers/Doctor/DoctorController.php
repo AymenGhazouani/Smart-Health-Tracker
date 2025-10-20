@@ -9,6 +9,7 @@ use App\Models\Specialty;
 use App\Models\DoctorReview;
 use App\Services\DoctorServ\DoctorReviewService;
 use App\Services\DoctorServ\DoctorService;
+use PDF;
 class DoctorController extends Controller
 {
     protected $doctorService;
@@ -22,22 +23,30 @@ class DoctorController extends Controller
      * @return \Illuminate\Http\Response
      */
 
+
+
 public function index(Request $request)
 {
     $specialtyId = $request->query('specialty');
+    $search = $request->query('search'); // New search input
     $specialties = Specialty::all();
 
     $doctors = Doctor::when($specialtyId, function ($query, $specialtyId) {
-        return $query->where('specialty_id', $specialtyId);
-    })->paginate(10);
+            return $query->where('specialty_id', $specialtyId);
+        })
+        ->when($search, function ($query, $search) {
+            return $query->where('name', 'like', "%{$search}%")
+                         ->orWhere('email', 'like', "%{$search}%");
+        })
+        ->paginate(6) // maximum 6 per page
+        ->withQueryString(); // keep filters in pagination links
 
     if (auth()->check() && auth()->user()->isAdmin()) {
-        return view('admin.doctor.index', compact('doctors', 'specialties', 'specialtyId'));
+        return view('admin.doctor.index', compact('doctors', 'specialties', 'specialtyId', 'search'));
     }
 
-    return view('doctors.index', compact('doctors', 'specialties', 'specialtyId'));
+    return view('doctors.index', compact('doctors', 'specialties', 'specialtyId', 'search'));
 }
-
 
 
 public function edit(Doctor $doctor)
@@ -94,7 +103,7 @@ public function create()
         'name' => 'required|string|max:255',
         'email' => 'required|email|unique:doctors,email',
         'specialty_id' => 'required|exists:specialties,id',
-        'phone' => 'nullable|string|max:8|min:8',
+        'phone' => ['nullable', 'regex:/^\d{8}$/'],
         'description' => 'nullable|string',
     ]);
 
@@ -176,7 +185,7 @@ public function show(Doctor $doctor)
         'name' => 'sometimes|string|max:255',
         'email' => 'sometimes|email|unique:doctors,email,' . $doctor->id,
          'specialty_id' => 'sometimes|exists:specialties,id',
-        'phone' => 'nullable|string|max:8|min:8',
+        'phone' => ['nullable', 'regex:/^\d{8}$/'],
         'description' => 'nullable|string',
     ]);
 
@@ -222,6 +231,18 @@ return redirect()->route('admin.doctor.index')->with('success', 'Doctor updated 
 return redirect()->route('admin.doctor.index')->with('success', 'Doctor deleted successfully!');
 
 }
+public function exportPdf()
+{
+    $doctors = Doctor::with('specialty', 'reviews')->get();
+
+    $pdf = PDF::loadView('doctors.pdf', compact('doctors'));
+
+    return $pdf->download('doctors-list.pdf');
+}
+
+
+
+
 
 
 

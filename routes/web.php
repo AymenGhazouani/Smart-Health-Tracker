@@ -13,6 +13,7 @@ use App\Http\Controllers\VisitSummaryController;
 use App\Http\Controllers\Doctor\DoctorController;
 use App\Http\Controllers\Doctor\SpecialtyController;
 use App\Http\Controllers\Doctor\DoctorReviewController;
+use App\Http\Controllers\Doctor\StatsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,6 +39,10 @@ Route::get('/', function () {
 
 // Protected routes for authenticated users
 Route::middleware(['auth'])->group(function () {
+
+    Route::get('/doctors/pdf', [DoctorController::class, 'exportPdf'])->name('doctors.pdf');
+
+    
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     /**
@@ -145,14 +150,22 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // Public specialty & review browsing
+Route::get('/admin/stats/doctors-per-specialty', [App\Http\Controllers\Doctor\StatsController::class, 'doctorsPerSpecialty'])
+    ->middleware(['auth', 'admin'])
+    ->name('doctors.stats');
+
+     
 Route::get('specialties', [SpecialtyController::class, 'index'])->name('specialties.index');
+
+
 Route::resource('review', DoctorReviewController::class)->only(['index', 'destroy']);
 
 // Admin-only routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    
     Route::get('/dashboard', [DashboardController::class, 'admin'])->name('dashboard');
     Route::resource('foods', \App\Http\Controllers\MealPlanningFt\Api\V1\FoodController::class);
-
+    
     /**
      * ==============================
      *  Admin Metrics
@@ -213,6 +226,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::put('/doctor/{doctor}', [DoctorController::class, 'update'])->name('doctor.update');
     Route::delete('/doctor/{doctor}', [DoctorController::class, 'destroy'])->name('doctor.destroy');
     Route::get('/doctor/{doctor}/show', [DoctorController::class, 'showAdmin'])->name('doctor.showAdmin');
+    
 });
 
 require __DIR__.'/auth.php';

@@ -6,7 +6,17 @@
     $colors = ['blue', 'green', 'red', 'yellow', 'purple', 'indigo', 'pink'];
     $color = $colors[$doctor->id % count($colors)];
 @endphp
+@if(session('success'))
+    <div class="flash-message fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg z-50">
+        {{ session('success') }}
+    </div>
+@endif
 
+@if(session('error'))
+    <div class="flash-message fixed top-4 right-4 bg-red-500 text-white px-4 py-2 rounded shadow-lg z-50">
+        {{ session('error') }}
+    </div>
+@endif
 <div class="max-w-6xl mx-auto mt-8 flex flex-col lg:flex-row gap-8">
 
     <!-- Left: Picture + Basic Info -->
@@ -104,5 +114,11 @@
 
     </div>
 </div>
-
+<script>
+    // Auto-hide flash messages
+    setTimeout(() => {
+        const messages = document.querySelectorAll('.flash-message');
+        messages.forEach(msg => msg.remove());
+    }, 4000);
+</script>
 @endsection

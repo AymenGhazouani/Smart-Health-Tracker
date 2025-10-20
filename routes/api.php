@@ -28,6 +28,7 @@ require base_path('routes/MealPlan.php');
 require base_path('routes/PsychologyVisits.php');
 
 Route::middleware('auth:sanctum')->group(function () {
+
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
@@ -41,6 +42,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', [ApiAuthController::class, 'logout']);
 
     Route::prefix('v1')->group(function () {
+                    Route::get('/doctors/recommendations', [DoctorController::class, 'recommendations'])->name('doctors.recommendations');
 
         // Doctors CRUD
         Route::apiResource('doctors', DoctorController::class);
@@ -53,9 +55,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('doctors/{doctor}/reviews', [DoctorReviewController::class, 'store']);
 
         // Optional: review CRUD
+
         Route::get('reviews/{review}', [DoctorReviewController::class, 'show']);
         Route::put('reviews/{review}', [DoctorReviewController::class, 'update']);
         Route::delete('reviews/{review}', [DoctorReviewController::class, 'destroy']);
+
     });
 
 

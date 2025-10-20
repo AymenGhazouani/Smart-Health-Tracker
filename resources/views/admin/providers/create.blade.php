@@ -37,24 +37,26 @@
             <!-- Page content -->
             <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
                 <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                    <!-- Error Messages -->
+                    @if ($errors->any())
+                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                            <ul class="list-disc list-inside">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
                     <div class="bg-white shadow overflow-hidden sm:rounded-md p-6">
-                        <form action="{{ route('providers.store') }}" method="POST">
+                        <form action="{{ route('providers.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
 
                             <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                                <!-- Name Field -->
-                                <div class="col-span-1">
-                                    <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
-                                    <input type="text" name="name" id="name" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md @error('name') border-red-500 @enderror" value="{{ old('name') }}">
-                                    @error('name')
-                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                    @enderror
-                                </div>
-
                                 <!-- User Field -->
-                                <div class="col-span-1">
-                                    <label for="user_id" class="block text-sm font-medium text-gray-700">Associated User</label>
-                                    <select name="user_id" id="user_id" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md @error('user_id') border-red-500 @enderror">
+                                <div class="col-span-2">
+                                    <label for="user_id" class="block text-sm font-medium text-gray-700">Associated User <span class="text-red-500">*</span></label>
+                                    <select name="user_id" id="user_id" required class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md @error('user_id') border-red-500 @enderror">
                                         <option value="">-- Select User --</option>
                                         @forelse($users as $user)
                                             <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
@@ -69,11 +71,39 @@
                                     @enderror
                                 </div>
 
-                                <!-- Additional Fields as needed -->
+                                <!-- Specialty Field -->
+                                <div class="col-span-1">
+                                    <label for="specialty" class="block text-sm font-medium text-gray-700">Specialty <span class="text-red-500">*</span></label>
+                                    <input type="text" name="specialty" id="specialty" required class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md @error('specialty') border-red-500 @enderror" value="{{ old('specialty') }}" placeholder="e.g., Cardiologist, Dentist">
+                                    @error('specialty')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <!-- Hourly Rate Field -->
+                                <div class="col-span-1">
+                                    <label for="hourly_rate" class="block text-sm font-medium text-gray-700">Hourly Rate ($)</label>
+                                    <input type="number" name="hourly_rate" id="hourly_rate" step="0.01" min="0" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md @error('hourly_rate') border-red-500 @enderror" value="{{ old('hourly_rate') }}" placeholder="0.00">
+                                    @error('hourly_rate')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <!-- Profile Image Field -->
                                 <div class="col-span-2">
-                                    <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
-                                    <textarea name="description" id="description" rows="3" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md @error('description') border-red-500 @enderror">{{ old('description') }}</textarea>
-                                    @error('description')
+                                    <label for="profile_image" class="block text-sm font-medium text-gray-700">Profile Image</label>
+                                    <input type="file" name="profile_image" id="profile_image" accept="image/*" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md @error('profile_image') border-red-500 @enderror">
+                                    <p class="text-xs text-gray-500 mt-1">Maximum file size: 2MB. Accepted formats: JPG, PNG, GIF</p>
+                                    @error('profile_image')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <!-- Bio Field -->
+                                <div class="col-span-2">
+                                    <label for="bio" class="block text-sm font-medium text-gray-700">Bio</label>
+                                    <textarea name="bio" id="bio" rows="4" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md @error('bio') border-red-500 @enderror" placeholder="Enter provider's biography, qualifications, and experience...">{{ old('bio') }}</textarea>
+                                    @error('bio')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>

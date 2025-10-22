@@ -5,9 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Appointment;
 use App\Models\Provider;
 use App\Models\AvailabilitySlot;
-use App\Notifications\AppointmentBooked;
-use App\Notifications\AppointmentCanceled;
-use App\Notifications\AppointmentRescheduled;
+
 use Illuminate\Http\Request;
 
 class AppointmentController extends Controller
@@ -75,10 +73,6 @@ class AppointmentController extends Controller
 
         $slot->update(['is_booked' => true]);
 
-        // Notify provider about new appointment
-        $provider = Provider::with('user')->find($validated['provider_id']);
-        $provider->user->notify(new AppointmentBooked($appointment));
-
         return redirect()->route('appointments.index')
             ->with('success', 'Appointment booked successfully.');
     }
@@ -123,9 +117,6 @@ class AppointmentController extends Controller
             $newSlot->update(['is_booked' => true]);
             $validated['scheduled_time'] = $newSlot->start_time;
             $validated['status'] = 'rescheduled';
-
-            // Notify provider about rescheduled appointment
-            $appointment->provider->user->notify(new AppointmentRescheduled($appointment));
         }
 
         $appointment->update($validated);
@@ -141,9 +132,6 @@ class AppointmentController extends Controller
         // Free up the slot
         $slot = AvailabilitySlot::find($appointment->availability_slot_id);
         $slot->update(['is_booked' => false]);
-
-        // Notify provider about canceled appointment
-        $appointment->provider->user->notify(new AppointmentCanceled($appointment));
 
         return redirect()->route('appointments.index')
             ->with('success', 'Appointment canceled successfully.');

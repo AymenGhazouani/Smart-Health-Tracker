@@ -69,7 +69,7 @@ class ProviderController extends Controller
 
         Provider::create($validated);
 
-        return redirect()->route('admin.providers.index')
+        return redirect()->route('providers.index')
             ->with('success', 'Provider created successfully.');
     }
 
@@ -102,14 +102,14 @@ class ProviderController extends Controller
 
         $provider->update($validated);
 
-        return redirect()->route('admin.providers.index')
+        return redirect()->route('providers.index')
             ->with('success', 'Provider updated successfully.');
     }
 
     public function destroy(Provider $provider)
     {
         $provider->delete();
-        return redirect()->route('admin.providers.index')
+        return redirect()->route('providers.index')
             ->with('success', 'Provider deleted successfully.');
     }
 

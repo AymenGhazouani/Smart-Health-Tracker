@@ -81,6 +81,31 @@ Route::middleware(['auth'])->group(function () {
 
     /**
      * ==============================
+     *  AI Health Insights
+     * ==============================
+     */
+    Route::get('/health-ai', [\App\Http\Controllers\HealthAIController::class, 'dashboard'])->name('health-ai.dashboard');
+    Route::get('/health-ai/insights', [\App\Http\Controllers\HealthAIController::class, 'getInsights'])->name('health-ai.insights');
+    Route::get('/health-ai/score', [\App\Http\Controllers\HealthAIController::class, 'getHealthScore'])->name('health-ai.score');
+    
+    // Health Predictions
+    Route::get('/health-predictions', [\App\Http\Controllers\HealthPredictionController::class, 'dashboard'])->name('health-predictions.dashboard');
+    Route::post('/health-predictions/weight-goal', [\App\Http\Controllers\HealthPredictionController::class, 'weightGoal'])->name('health-predictions.weight-goal');
+    Route::get('/health-predictions/weight-trend', [\App\Http\Controllers\HealthPredictionController::class, 'weightTrend'])->name('health-predictions.weight-trend');
+    
+    // Machine Learning Features
+    Route::get('/health-ml', [\App\Http\Controllers\HealthMLController::class, 'dashboard'])->name('health-ml.dashboard');
+    Route::get('/health-ml/risk-assessment', [\App\Http\Controllers\HealthMLController::class, 'getRiskAssessment'])->name('health-ml.risk-assessment');
+    Route::get('/health-ml/weight-forecast', [\App\Http\Controllers\HealthMLController::class, 'getWeightForecast'])->name('health-ml.weight-forecast');
+    Route::get('/health-ml/anomalies', [\App\Http\Controllers\HealthMLController::class, 'getAnomalies'])->name('health-ml.anomalies');
+    
+    // Data Seeding Interface
+    Route::get('/admin/seed-data', [\App\Http\Controllers\DataSeederController::class, 'index'])->name('admin.seed-data');
+    Route::post('/admin/seed-data/seed', [\App\Http\Controllers\DataSeederController::class, 'seedData'])->name('admin.seed-data.seed');
+    Route::delete('/admin/seed-data/clear', [\App\Http\Controllers\DataSeederController::class, 'clearData'])->name('admin.seed-data.clear');
+
+    /**
+     * ==============================
      *  Provider & Appointments
      * ==============================
      */

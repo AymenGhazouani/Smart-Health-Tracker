@@ -115,6 +115,17 @@ Route::middleware(['auth'])->group(function () {
      * ==============================
      */
     Route::resource('providers', ProviderController::class);
+    
+    // Advanced Provider Features
+    Route::prefix('providers')->name('providers.')->group(function () {
+        Route::get('/export/excel', [ProviderController::class, 'exportExcel'])->name('export.excel');
+        Route::get('/export/pdf', [ProviderController::class, 'exportPdf'])->name('export.pdf');
+        Route::post('/bulk-action', [ProviderController::class, 'bulkAction'])->name('bulk-action');
+        Route::get('/analytics', [ProviderController::class, 'analytics'])->name('analytics');
+        Route::get('/search', [ProviderController::class, 'search'])->name('search');
+        Route::post('/{provider}/toggle-status', [ProviderController::class, 'toggleStatus'])->name('toggle-status');
+    });
+    
     Route::resource('availability-slots', AvailabilitySlotController::class);
 
     // Appointments

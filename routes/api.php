@@ -87,3 +87,19 @@ Route::prefix('v1')->group(function () {
         Route::get('appointments/{appointment}/summary', [AppointmentController::class, 'summary']);
     });
 });
+
+// Advanced Provider API Routes
+Route::prefix('api/v1/providers')->name('api.providers.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\Api\ProviderApiController::class, 'index'])->name('index');
+    Route::get('/analytics', [\App\Http\Controllers\Api\ProviderApiController::class, 'analytics'])->name('analytics');
+    Route::get('/search', [\App\Http\Controllers\Api\ProviderApiController::class, 'search'])->name('search');
+    Route::get('/dashboard-stats', [\App\Http\Controllers\Api\ProviderApiController::class, 'dashboardStats'])->name('dashboard-stats');
+    Route::get('/export-formats', [\App\Http\Controllers\Api\ProviderApiController::class, 'exportFormats'])->name('export-formats');
+    Route::get('/filter-suggestions', [\App\Http\Controllers\Api\ProviderApiController::class, 'filterSuggestions'])->name('filter-suggestions');
+    Route::get('/{provider}', [\App\Http\Controllers\Api\ProviderApiController::class, 'show'])->name('show');
+    
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/bulk-action', [\App\Http\Controllers\Api\ProviderApiController::class, 'bulkAction'])->name('bulk-action');
+        Route::post('/{provider}/toggle-status', [\App\Http\Controllers\Api\ProviderApiController::class, 'toggleStatus'])->name('toggle-status');
+    });
+});

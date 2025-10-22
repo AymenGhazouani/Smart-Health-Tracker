@@ -191,6 +191,52 @@
                 </div>
             </div>
 
+            <!-- Appointment Booking -->
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg hover:shadow-md transition-shadow duration-300">
+                <div class="p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="p-3 rounded-full bg-teal-100 text-teal-600">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="ml-4 text-lg font-semibold text-gray-900">Book Appointment</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4">Schedule appointments with healthcare providers and manage your upcoming visits.</p>
+                    <div class="space-y-2">
+                        <a href="{{ route('appointments.create') }}" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out block text-center">
+                            Book New Appointment
+                        </a>
+                        <a href="{{ route('appointments.index') }}" class="w-full bg-teal-100 hover:bg-teal-200 text-teal-700 font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out block text-center">
+                            My Appointments
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Symptom Checker -->
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg hover:shadow-md transition-shadow duration-300">
+                <div class="p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="p-3 rounded-full bg-red-100 text-red-600">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="ml-4 text-lg font-semibold text-gray-900">Symptom Checker</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4">Analyze your symptoms and get preliminary health assessments with AI assistance.</p>
+                    <div class="space-y-2">
+                        <a href="{{ route('symptom-checker') }}" class="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out block text-center">
+                            Check Symptoms
+                        </a>
+                        <a href="{{ route('symptom-history') }}" class="w-full bg-red-100 hover:bg-red-200 text-red-700 font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out block text-center">
+                            Symptom History
+                        </a>
+                    </div>
+                </div>
+            </div>
+
             <!-- Health Insights -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg hover:shadow-md transition-shadow duration-300">
                 <div class="p-6">

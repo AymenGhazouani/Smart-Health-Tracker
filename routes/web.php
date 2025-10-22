@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SymptomCheckerController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Metrics\MetricsDashboardController;
@@ -51,7 +52,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/notifications', [\App\Http\Controllers\NotificationsController::class, 'index'])->name('notifications.index');
     Route::post('/notifications/{id}/read', [\App\Http\Controllers\NotificationsController::class, 'markAsRead'])->name('notifications.read');
     Route::post('/notifications/read-all', [\App\Http\Controllers\NotificationsController::class, 'markAllAsRead'])->name('notifications.readAll');
-    
+
     // User metrics routes
 
     // Weights
@@ -143,11 +144,15 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('doctors', DoctorController::class);
     Route::resource('reviews', DoctorReviewController::class);
 });
+Route::get('/symtoms-analyser', [SymptomCheckerController::class, 'index'])->name('symptom-checker');
 
+Route::post('/analyze-symptoms', [SymptomCheckerController::class, 'analyze'])->name('analyze-symptoms');
+Route::get('/symptom-history', [SymptomCheckerController::class, 'history'])->name('symptom-history');
 // Public specialty & review browsing
 Route::get('specialties', [SpecialtyController::class, 'index'])->name('specialties.index');
 Route::resource('review', DoctorReviewController::class)->only(['index', 'destroy']);
-
+Route::resource('providers', ProviderController::class);
+Route::post('appointments/{appointment}/cancel', [AppointmentController::class, 'cancel'])->name('appointments.cancel');
 // Admin-only routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'admin'])->name('dashboard');
@@ -175,7 +180,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
      *  Admin Providers & Appointments
      * ==============================
      */
-    Route::resource('providers', ProviderController::class);
     Route::get('/appointments', [AppointmentController::class, 'adminIndex'])->name('appointments.index');
 
     Route::resource('meals', \App\Http\Controllers\MealPlanningFt\Api\V1\MealController::class);

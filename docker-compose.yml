@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: laravel-app
+        ports:
+            - "8081:80"  # Change 8081 to any available port
+        volumes:
+            - .:/var/www/html
+        environment:
+            - APP_ENV=production
+            - APP_DEBUG=false
+        depends_on:
+            - db
+        networks:
+            - laravel
+
+    db:
+        image: mysql:8.0
+        container_name: laravel-db
+        environment:
+            MYSQL_DATABASE: laravel
+            MYSQL_ROOT_PASSWORD: secret
+            MYSQL_USER: laravel
+            MYSQL_PASSWORD: secret
+        volumes:
+            - dbdata:/var/lib/mysql
+        networks:
+            - laravel
+
+volumes:
+    dbdata:
+
+networks:
+    laravel:
+        driver: bridge

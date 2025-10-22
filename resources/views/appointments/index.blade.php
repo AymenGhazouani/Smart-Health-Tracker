@@ -117,7 +117,6 @@
 
                                             <form action="{{ route('appointments.cancel', $appointment->id) }}" method="POST" class="inline-block">
                                                 @csrf
-                                                @method('PATCH')
                                                 <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Are you sure you want to cancel this appointment?')">Cancel</button>
                                             </form>
                                         @endif

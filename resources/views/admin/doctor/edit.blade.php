@@ -10,7 +10,7 @@
 <div class="max-w-3xl mx-auto mt-8 bg-white shadow-lg rounded-xl border-l-8 border-{{ $color }}-500 p-6">
     <h1 class="text-2xl font-bold mb-4">{{ isset($doctor) ? 'Edit Doctor' : 'Add Doctor' }}</h1>
 
-    <form action="{{ isset($doctor) ? route('doctor.update', $doctor->id) : route('doctor.store') }}" method="POST">
+    <form action="{{ isset($doctor) ? route('admin.doctor.update', $doctor->id) : route('admin.doctor.store') }}" method="POST">
         @csrf
         @if(isset($doctor))
             @method('PUT')

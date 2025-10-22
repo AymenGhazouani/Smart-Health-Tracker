@@ -16,7 +16,7 @@
 <!-- Action Buttons Toolbar -->
 <div class="bg-gray-50 p-4 rounded-lg shadow-md flex flex-wrap gap-3 mb-6 items-center justify-between">
     <!-- Left: Add Doctor -->
-    <a href="{{ route('doctor.create') }}" 
+    <a href="{{ route('admin.doctor.create') }}" 
        class="flex items-center gap-2 px-5 py-2 bg-blue-600 text-white rounded-full shadow hover:bg-blue-700 transition transform hover:-translate-y-1">
         <span>➕</span>
         <span>Add Doctor</span>
@@ -111,7 +111,7 @@
         @php $color = $colors[$doctor->id % count($colors)]; @endphp
 
         <div class="relative bg-white shadow-lg rounded-xl border-l-8 border-{{ $color }}-500 p-6 flex flex-col space-y-4 transition transform hover:scale-105 cursor-pointer overflow-hidden"
-             onclick="window.location='{{ route('doctor.showAdmin', $doctor->id) }}'">
+             onclick="window.location='{{ route('admin.doctor.showAdmin', $doctor->id) }}'">
 
             <!-- Accent circle in top-right -->
             <div class="absolute top-0 right-0 w-24 h-24 bg-{{ $color }}-100 rounded-full opacity-30 -translate-x-6 -translate-y-6 pointer-events-none"></div>
@@ -130,11 +130,11 @@
 
             <!-- Update/Delete Buttons -->
             <div class="flex space-x-2 mt-4 relative z-10">
-                <a href="{{ route('doctor.edit', $doctor->id) }}" 
+                <a href="{{ route('admin.doctor.edit', $doctor->id) }}" 
                    class="flex items-center gap-1 px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
                     ✏️ Edit
                 </a>
-                <form action="{{ route('doctor.destroy', $doctor->id) }}" method="POST">
+                <form action="{{ route('admin.doctor.destroy', $doctor->id) }}" method="POST">
                     @csrf
                     @method('DELETE')
                     <button type="submit" 

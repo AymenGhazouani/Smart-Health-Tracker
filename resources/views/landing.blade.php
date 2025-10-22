@@ -203,9 +203,9 @@
                         <h3 class="ml-4 text-lg font-semibold text-gray-900">Health Insights</h3>
                     </div>
                     <p class="text-gray-600 mb-4">Get personalized health recommendations based on your data and trends.</p>
-                    <button class="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out">
-                        View Insights
-                    </button>
+                    <a href="{{ route('health-ai.dashboard') }}" class="w-full inline-block bg-yellow-600 hover:bg-yellow-700 text-white font-medium py-2 px-4 rounded-md text-center transition duration-150 ease-in-out">
+                        View AI Insights
+                    </a>
                 </div>
             </div>
         </div>

@@ -1,29 +1,30 @@
-FROM bitnami/laravel:10
+FROM php:8.2-cli
 
-USER root
+WORKDIR /var/www/html
 
-WORKDIR /app
+# Install minimal dependencies
+RUN apt-get update && apt-get install -y \
+    libzip-dev \
+    zip \
+    unzip \
+    && docker-php-ext-install pdo_mysql zip \
+    && rm -rf /var/lib/apt/lists/*
 
-# Copy only necessary files first
-COPY composer.json composer.lock* ./
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Install dependencies
-RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist || true
-
-# Copy application code
+# Copy application
 COPY . .
 
-# Complete composer installation
-RUN composer dump-autoload --optimize || true
+# Install dependencies
+RUN composer install --optimize-autoloader --no-dev --ignore-platform-reqs || true
 
 # Setup environment
 RUN if [ ! -f .env ]; then cp .env.example .env; fi && \
     php artisan key:generate --force || true
 
-# Fix permissions - only for directories that need it
-RUN mkdir -p storage/framework/{sessions,views,cache} && \
-    mkdir -p bootstrap/cache && \
-    chmod -R 777 storage bootstrap/cache
+# Permissions
+RUN chmod -R 777 storage bootstrap/cache
 
 EXPOSE 8000
 

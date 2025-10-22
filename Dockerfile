@@ -1,26 +1,30 @@
-FROM serversideup/php:8.2-fpm-apache
+FROM bitnami/laravel:10
 
-# Set working directory
-WORKDIR /var/www/html
+USER root
 
-# Copy application files
+WORKDIR /app
+
+# Copy only necessary files first
+COPY composer.json composer.lock* ./
+
+# Install dependencies
+RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist || true
+
+# Copy application code
 COPY . .
 
-# Install composer dependencies
-RUN composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-reqs || true
+# Complete composer installation
+RUN composer dump-autoload --optimize || true
 
-# Set permissions
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html/storage /var/www/html/bootstrap/cache
+# Setup environment
+RUN if [ ! -f .env ]; then cp .env.example .env; fi && \
+    php artisan key:generate --force || true
 
-# Copy .env if needed
-RUN if [ ! -f .env ]; then cp .env.example .env; fi
+# Fix permissions - only for directories that need it
+RUN mkdir -p storage/framework/{sessions,views,cache} && \
+    mkdir -p bootstrap/cache && \
+    chmod -R 777 storage bootstrap/cache
 
-# Generate application key
-RUN php artisan key:generate --force || true
+EXPOSE 8000
 
-# Clear and cache config
-RUN php artisan config:clear || true
-RUN php artisan cache:clear || true
-
-EXPOSE 80
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]

@@ -37,7 +37,7 @@ public function store(Request $request)
     }
 
     $data = $request->validate([
-        'name' => 'required|string|max:255',
+    'name' => ['required', 'string', 'max:255', 'regex:/^[A-Za-z\s]+$/'],
     ]);
 
     $this->specialtyService->create($data);
@@ -56,7 +56,7 @@ public function update(Request $request, Specialty $specialty)
     }
 
     $data = $request->validate([
-        'name' => 'required|string|max:255',
+    'name' => ['required', 'string', 'max:255', 'regex:/^[A-Za-z\s]+$/'],
     ]);
 
     $this->specialtyService->update($specialty, $data);

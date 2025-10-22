@@ -1,4 +1,27 @@
 @extends('layouts.app')
+@if(session('success'))
+    <div class="flash-message fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg z-50">
+        {{ session('success') }}
+    </div>
+@endif
+
+@if(session('error'))
+    <div class="flash-message fixed top-4 right-4 bg-red-500 text-white px-4 py-2 rounded shadow-lg z-50">
+        {{ session('error') }}
+    </div>
+@endif
+
+@if(session('success'))
+    <div class="flash-message fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg z-50">
+        {{ session('success') }}
+    </div>
+@endif
+
+@if(session('error'))
+    <div class="flash-message fixed top-4 right-4 bg-red-500 text-white px-4 py-2 rounded shadow-lg z-50">
+        {{ session('error') }}
+    </div>
+@endif
 
 @section('content')
 
@@ -11,6 +34,17 @@
     <div class="bg-black bg-opacity-30 w-full h-full flex items-center justify-center rounded-lg">
         <h1 class="text-white text-3xl md:text-5xl font-bold">Our Doctors</h1>
     </div>
+</div>
+<div class="flex justify-end mb-4 space-x-3">
+    <a href="{{ route('doctors.pdf') }}" 
+       class="px-4 py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition">
+        📄 Download PDF
+    </a>
+
+    <a href="{{ route('doctors.stats') }}" 
+       class="px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition">
+        📊 View Statistics
+    </a>
 </div>
 
 <!-- Action Buttons Toolbar -->
@@ -28,7 +62,7 @@
                 class="flex items-center gap-2 px-5 py-2 bg-green-600 text-white rounded-full shadow hover:bg-green-700 transition transform hover:-translate-y-1">
             <span>➕</span>
             <span>Add Specialty</span>
-        </button>
+        </button> 
 
         <button id="viewSpecialtiesBtn" 
                 class="flex items-center gap-2 px-5 py-2 bg-red-600 text-white rounded-full shadow hover:bg-red-700 transition transform hover:-translate-y-1">
@@ -43,12 +77,37 @@
 <div id="addSpecialtyModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
     <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
         <h2 class="text-xl font-bold mb-4">Add Specialty</h2>
+
+        <!-- Display validation errors -->
+        @if ($errors->any() && session('from_modal') === 'specialty')
+            <div class="mb-4 p-4 border border-red-400 bg-red-100 text-red-700 rounded">
+                <ul class="list-disc list-inside">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+
+            <script>
+                window.addEventListener('DOMContentLoaded', function() {
+                    document.getElementById('addSpecialtyModal').classList.remove('hidden');
+                });
+            </script>
+        @endif
+
         <form action="{{ route('specialties.store') }}" method="POST">
             @csrf
+            <input type="hidden" name="from_modal" value="specialty">
             <div class="mb-4">
                 <label class="block font-semibold">Name</label>
-                <input type="text" name="name" class="border rounded w-full px-3 py-2" required>
+                <input type="text" name="name" 
+                       value="{{ old('name') }}" 
+                       class="border rounded w-full px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none" 
+                       required
+                       pattern="[A-Za-z\s]{1,255}" 
+                       title="Specialty name must contain only letters and spaces, max 255 characters">
             </div>
+
             <div class="flex justify-end space-x-2">
                 <button type="button" id="closeSpecialtyModal" class="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400">Cancel</button>
                 <button type="submit" class="px-4 py-2 rounded bg-green-600 hover:bg-green-700 text-white">Add</button>
@@ -56,6 +115,7 @@
         </form>
     </div>
 </div>
+
 
 <!-- View Specialties Modal -->
 <!-- View Specialties Modal -->
@@ -189,6 +249,12 @@
             btn.closest('.edit-form').classList.add('hidden');
         });
     });
+    // Make flash messages disappear after 4 seconds
+setTimeout(() => {
+    const messages = document.querySelectorAll('.flash-message');
+    messages.forEach(msg => msg.remove());
+}, 4000); // 4000ms = 4 seconds
+
 </script>
 
 @endsection

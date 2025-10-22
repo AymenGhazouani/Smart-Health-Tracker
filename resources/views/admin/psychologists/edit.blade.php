@@ -105,12 +105,18 @@
                                 <div class="flex-1 flex space-x-2">
                                     <input type="time" name="availability[{{ $day }}][0][start]" 
                                            value="{{ $availability[$day][0]['start'] ?? '09:00' }}"
-                                           class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                           class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm @error("availability.{$day}.0.start") border-red-300 @enderror">
                                     <span class="flex items-center text-gray-500">to</span>
                                     <input type="time" name="availability[{{ $day }}][0][end]" 
                                            value="{{ $availability[$day][0]['end'] ?? '17:00' }}"
-                                           class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                           class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm @error("availability.{$day}.0.end") border-red-300 @enderror">
                                 </div>
+                                @error("availability.{$day}.0.start")
+                                    <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                                @enderror
+                                @error("availability.{$day}.0.end")
+                                    <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
                         @endforeach
                     </div>

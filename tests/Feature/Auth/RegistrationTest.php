@@ -19,6 +19,13 @@ class RegistrationTest extends TestCase
         ]);
 
         $this->assertAuthenticated();
-        $response->assertNoContent();
+        
+        // First user becomes admin, so check for admin dashboard redirect
+        $user = auth()->user();
+        if ($user->isAdmin()) {
+            $response->assertRedirect(route('admin.dashboard'));
+        } else {
+            $response->assertRedirect(route('dashboard'));
+        }
     }
 }

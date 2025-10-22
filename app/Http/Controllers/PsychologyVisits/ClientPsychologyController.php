@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\PsychologyVisits;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PsychologyVisits\StoreSessionRequest;
 use App\Services\PsychologyVisits\PsychologistService;
 use App\Services\PsychologyVisits\PsySessionService;
 use Illuminate\Http\Request;
@@ -139,19 +140,8 @@ class ClientPsychologyController extends Controller
     /**
      * Store new session booking
      */
-    public function storeSession(Request $request)
+    public function storeSession(StoreSessionRequest $request)
     {
-        $request->validate([
-            'psychologist_id' => 'required|exists:psychologists,id',
-            'session_date' => 'required|date|after_or_equal:today',
-            'session_time' => 'required|string',
-            'duration' => 'nullable|integer|min:30|max:180',
-            'session_type' => 'nullable|string|in:individual,couples,family,group',
-            'reason' => 'nullable|string|max:1000',
-            'special_requests' => 'nullable|string|max:500',
-            'terms_accepted' => 'required|accepted',
-        ]);
-
         try {
             // Combine date and time
             $startTime = \Carbon\Carbon::parse($request->session_date . ' ' . $request->session_time);
@@ -170,11 +160,11 @@ class ClientPsychologyController extends Controller
             $session = $this->sessionService->createSession($sessionData);
 
             return redirect()->route('psychology.sessions.show', $session->id)
-                ->with('success', 'Session booked successfully! You will receive a confirmation email shortly.');
+                ->with('success', 'Séance réservée avec succès ! Vous recevrez un email de confirmation sous peu.');
 
         } catch (\Exception $e) {
             return redirect()->back()
-                ->with('error', 'Failed to book session: ' . $e->getMessage())
+                ->with('error', 'Échec de la réservation de la séance : ' . $e->getMessage())
                 ->withInput();
         }
     }

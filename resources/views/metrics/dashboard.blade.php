@@ -57,6 +57,8 @@
                 <a href="{{ route('metrics.activities') }}" class="card-action">View Details</a>
             </div>
         </div>
+
+        @include('components.ai-health-widget')
     </div>
 </div>
 

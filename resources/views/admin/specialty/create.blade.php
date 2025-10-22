@@ -8,9 +8,15 @@
     <form action="{{ route('specialties.store') }}" method="POST">
         @csrf
         <div class="mb-4">
-            <label class="block text-gray-700 font-semibold">Name</label>
-            <input type="text" name="name" value="{{ old('name') }}" class="w-full px-3 py-2 border rounded shadow-sm" required>
-        </div>
+    <label class="block text-gray-700 font-semibold">Name</label>
+    <input type="text" name="name" 
+           value="{{ old('name') }}" 
+           class="w-full px-3 py-2 border rounded shadow-sm" 
+           required
+           pattern="[A-Za-z\s]{1,255}" 
+           title="Specialty name must contain only letters and spaces, max 255 characters">
+</div>
+
 
         <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition">
             Create

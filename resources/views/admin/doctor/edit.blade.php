@@ -7,29 +7,61 @@
     $color = $colors[$doctor->id ?? rand(0,6) % count($colors)];
 @endphp
 
-<div class="max-w-3xl mx-auto mt-8 bg-white shadow-lg rounded-xl border-l-8 border-{{ $color }}-500 p-6">
-    <h1 class="text-2xl font-bold mb-4">{{ isset($doctor) ? 'Edit Doctor' : 'Add Doctor' }}</h1>
+<h1 class="text-3xl font-bold mb-6 text-gray-800 text-center">{{ isset($doctor) ? 'Edit Doctor' : 'Add Doctor' }}</h1>
 
-    <form action="{{ isset($doctor) ? route('admin.doctor.update', $doctor->id) : route('admin.doctor.store') }}" method="POST">
+<div class="max-w-2xl mx-auto bg-white shadow-lg rounded-xl border-l-8 border-{{ $color }}-500 p-8">
+
+    <!-- Display validation errors -->
+    @if ($errors->any())
+        <div class="mb-4 p-4 border border-red-400 bg-red-100 text-red-700 rounded">
+            <ul class="list-disc list-inside">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <form action="{{ isset($doctor) ? route('admin.doctor.update', $doctor->id) : route('doctors.store') }}" method="POST" class="space-y-6">
         @csrf
         @if(isset($doctor))
             @method('PUT')
         @endif
 
-        <div class="mb-4">
-            <label class="block text-gray-700 font-semibold">Name</label>
-            <input type="text" name="name" value="{{ old('name', $doctor->name ?? '') }}" class="w-full px-3 py-2 border rounded shadow-sm">
+        <div>
+            <label class="block text-gray-700 font-semibold mb-2">Name</label>
+            <input type="text" name="name" value="{{ old('name', $doctor->name ?? '') }}"
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-{{ $color }}-400 focus:outline-none" required>
         </div>
 
-        <div class="mb-4">
-            <label class="block text-gray-700 font-semibold">Email</label>
-            <input type="email" name="email" value="{{ old('email', $doctor->email ?? '') }}" class="w-full px-3 py-2 border rounded shadow-sm">
+        <div>
+            <label class="block text-gray-700 font-semibold mb-2">Email</label>
+            <input type="email" name="email" value="{{ old('email', $doctor->email ?? '') }}"
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-{{ $color }}-400 focus:outline-none" required>
         </div>
 
-        <div class="mb-4">
-            <label class="block text-gray-700 font-semibold">Specialty</label>
-            <select name="specialty_id" class="w-full px-3 py-2 border rounded shadow-sm">
-                <option value="">Select specialty</option>
+        <div>
+            <label class="block text-gray-700 font-semibold mb-2">Phone</label>
+            <input type="text" name="phone" id="phone" value="{{ old('phone', $doctor->phone ?? '') }}"
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-{{ $color }}-400 focus:outline-none"
+                   maxlength="8">
+        </div>
+
+        <script>
+            const phoneInput = document.getElementById('phone');
+            phoneInput.addEventListener('input', function() {
+                this.value = this.value.replace(/\D/g, '');
+                if (this.value.length > 8) {
+                    this.value = this.value.slice(0, 8);
+                }
+            });
+        </script>
+
+        <div>
+            <label class="block text-gray-700 font-semibold mb-2">Specialty</label>
+            <select name="specialty_id"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-{{ $color }}-400 focus:outline-none" required>
+                <option value="">Select a specialty</option>
                 @foreach($specialties as $specialty)
                     <option value="{{ $specialty->id }}" {{ (old('specialty_id', $doctor->specialty_id ?? '') == $specialty->id) ? 'selected' : '' }}>
                         {{ $specialty->name }}
@@ -38,15 +70,18 @@
             </select>
         </div>
 
-        <div class="mb-4">
-            <label class="block text-gray-700 font-semibold">Phone</label>
-            <input type="text" name="phone" value="{{ old('phone', $doctor->phone ?? '') }}" class="w-full px-3 py-2 border rounded shadow-sm">
+        <div>
+            <label class="block text-gray-700 font-semibold mb-2">Description</label>
+            <textarea name="description" rows="4"
+                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-{{ $color }}-400 focus:outline-none"
+                      placeholder="Write a short bio or description for the doctor...">{{ old('description', $doctor->description ?? '') }}</textarea>
         </div>
 
-        
-        <button type="submit" class="px-4 py-2 bg-{{ $color }}-600 hover:bg-{{ $color }}-700 text-white rounded transition">
-            {{ isset($doctor) ? 'Update' : 'Create' }}
-        </button>
+        <div class="text-center">
+            <button type="submit" class="bg-{{ $color }}-600 hover:bg-{{ $color }}-700 text-white font-semibold px-6 py-2 rounded-lg transition duration-200">
+                {{ isset($doctor) ? 'Update Doctor' : 'Add Doctor' }}
+            </button>
+        </div>
     </form>
 </div>
 

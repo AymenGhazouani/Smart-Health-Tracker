@@ -14,6 +14,7 @@ use App\Http\Controllers\VisitSummaryController;
 use App\Http\Controllers\Doctor\DoctorController;
 use App\Http\Controllers\Doctor\SpecialtyController;
 use App\Http\Controllers\Doctor\DoctorReviewController;
+use App\Http\Controllers\Doctor\StatsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,6 +40,10 @@ Route::get('/', function () {
 
 // Protected routes for authenticated users
 Route::middleware(['auth'])->group(function () {
+
+    Route::get('/doctors/pdf', [DoctorController::class, 'exportPdf'])->name('doctors.pdf');
+
+    
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     /**
@@ -78,6 +83,31 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/metrics/activities/{activity}/edit', [ActivitiesDetailController::class, 'edit'])->name('metrics.activities.edit');
     Route::put('/metrics/activities/{activity}', [ActivitiesDetailController::class, 'update'])->name('metrics.activities.update');
     Route::delete('/metrics/activities/{activity}', [ActivitiesDetailController::class, 'destroy'])->name('metrics.activities.destroy');
+
+    /**
+     * ==============================
+     *  AI Health Insights
+     * ==============================
+     */
+    Route::get('/health-ai', [\App\Http\Controllers\HealthAIController::class, 'dashboard'])->name('health-ai.dashboard');
+    Route::get('/health-ai/insights', [\App\Http\Controllers\HealthAIController::class, 'getInsights'])->name('health-ai.insights');
+    Route::get('/health-ai/score', [\App\Http\Controllers\HealthAIController::class, 'getHealthScore'])->name('health-ai.score');
+    
+    // Health Predictions
+    Route::get('/health-predictions', [\App\Http\Controllers\HealthPredictionController::class, 'dashboard'])->name('health-predictions.dashboard');
+    Route::post('/health-predictions/weight-goal', [\App\Http\Controllers\HealthPredictionController::class, 'weightGoal'])->name('health-predictions.weight-goal');
+    Route::get('/health-predictions/weight-trend', [\App\Http\Controllers\HealthPredictionController::class, 'weightTrend'])->name('health-predictions.weight-trend');
+    
+    // Machine Learning Features
+    Route::get('/health-ml', [\App\Http\Controllers\HealthMLController::class, 'dashboard'])->name('health-ml.dashboard');
+    Route::get('/health-ml/risk-assessment', [\App\Http\Controllers\HealthMLController::class, 'getRiskAssessment'])->name('health-ml.risk-assessment');
+    Route::get('/health-ml/weight-forecast', [\App\Http\Controllers\HealthMLController::class, 'getWeightForecast'])->name('health-ml.weight-forecast');
+    Route::get('/health-ml/anomalies', [\App\Http\Controllers\HealthMLController::class, 'getAnomalies'])->name('health-ml.anomalies');
+    
+    // Data Seeding Interface
+    Route::get('/admin/seed-data', [\App\Http\Controllers\DataSeederController::class, 'index'])->name('admin.seed-data');
+    Route::post('/admin/seed-data/seed', [\App\Http\Controllers\DataSeederController::class, 'seedData'])->name('admin.seed-data.seed');
+    Route::delete('/admin/seed-data/clear', [\App\Http\Controllers\DataSeederController::class, 'clearData'])->name('admin.seed-data.clear');
 
     /**
      * ==============================
@@ -149,15 +179,23 @@ Route::get('/symtoms-analyser', [SymptomCheckerController::class, 'index'])->nam
 Route::post('/analyze-symptoms', [SymptomCheckerController::class, 'analyze'])->name('analyze-symptoms');
 Route::get('/symptom-history', [SymptomCheckerController::class, 'history'])->name('symptom-history');
 // Public specialty & review browsing
+Route::get('/admin/stats/doctors-per-specialty', [App\Http\Controllers\Doctor\StatsController::class, 'doctorsPerSpecialty'])
+    ->middleware(['auth', 'admin'])
+    ->name('doctors.stats');
+
+     
 Route::get('specialties', [SpecialtyController::class, 'index'])->name('specialties.index');
+
+
 Route::resource('review', DoctorReviewController::class)->only(['index', 'destroy']);
 Route::resource('providers', ProviderController::class);
 Route::post('appointments/{appointment}/cancel', [AppointmentController::class, 'cancel'])->name('appointments.cancel');
 // Admin-only routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    
     Route::get('/dashboard', [DashboardController::class, 'admin'])->name('dashboard');
     Route::resource('foods', \App\Http\Controllers\MealPlanningFt\Api\V1\FoodController::class);
-
+    
     /**
      * ==============================
      *  Admin Metrics
@@ -217,6 +255,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::put('/doctor/{doctor}', [DoctorController::class, 'update'])->name('doctor.update');
     Route::delete('/doctor/{doctor}', [DoctorController::class, 'destroy'])->name('doctor.destroy');
     Route::get('/doctor/{doctor}/show', [DoctorController::class, 'showAdmin'])->name('doctor.showAdmin');
+    
 });
 
 require __DIR__.'/auth.php';

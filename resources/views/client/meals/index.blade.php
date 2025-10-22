@@ -26,6 +26,27 @@
             </div>
         </div>
 
+        <!-- Workout Q&A Section -->
+        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-8">
+            <div class="p-6">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">💪 Quick Workout Q&A</h2>
+                <p class="text-gray-600 mb-6">Get instant answers to common workout questions</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="qa-grid">
+                    <!-- Questions will be loaded here -->
+                </div>
+                
+                <!-- Answer Display -->
+                <div id="answer-section" class="hidden mt-6 p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                    <h3 id="answer-question" class="font-semibold text-gray-900 mb-2"></h3>
+                    <p id="answer-text" class="text-gray-700"></p>
+                    <button onclick="hideAnswer()" class="mt-3 text-blue-600 hover:text-blue-800 text-sm font-medium">
+                        ← Back to questions
+                    </button>
+                </div>
+            </div>
+        </div>
+
         @if($meals->count() > 0)
             <!-- Meals Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -205,4 +226,103 @@
         @endif
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Workout Q&A Data
+    const workoutQA = [
+        {
+            question: "How many times should I workout per week?",
+            answer: "For beginners, 3-4 times per week is ideal. This allows adequate recovery time between sessions while building consistency. Advanced individuals can workout 5-6 times per week with proper programming."
+        },
+        {
+            question: "Should I do cardio before or after weights?",
+            answer: "Do weights first if your primary goal is building muscle and strength. Do cardio first if your main goal is cardiovascular fitness. For fat loss, either order works - consistency matters more."
+        },
+        {
+            question: "How long should my workouts be?",
+            answer: "Effective workouts can be 30-60 minutes. Quality over quantity - a focused 30-minute session is better than a distracted 90-minute workout. Include warm-up and cool-down in your time."
+        },
+        {
+            question: "What should I eat before working out?",
+            answer: "Eat a light meal 2-3 hours before, or a small snack 30-60 minutes before. Good options: banana with peanut butter, oatmeal with berries, or a protein smoothie. Avoid heavy, fatty foods."
+        },
+        {
+            question: "How much water should I drink during exercise?",
+            answer: "Drink 7-10 oz every 10-20 minutes during exercise. Start hydrating 2-3 hours before your workout. If exercising over an hour, consider a sports drink to replace electrolytes."
+        },
+        {
+            question: "Is it normal to feel sore after workouts?",
+            answer: "Yes, mild muscle soreness 24-48 hours after exercise is normal, especially when starting or increasing intensity. Sharp pain during exercise is not normal - stop and assess if this occurs."
+        },
+        {
+            question: "Can I workout every day?",
+            answer: "You can be active daily, but intense workouts need rest days. Alternate between high-intensity days and light activities like walking, yoga, or stretching. Listen to your body's signals."
+        },
+        {
+            question: "What's the best time to workout?",
+            answer: "The best time is when you can be consistent. Morning workouts can boost energy for the day. Evening workouts can relieve stress. Choose what fits your schedule and energy levels."
+        },
+        {
+            question: "How do I know if I'm lifting enough weight?",
+            answer: "You should be able to complete all reps with good form, but the last 2-3 reps should feel challenging. If you can easily do more reps than planned, increase the weight by 5-10%."
+        },
+        {
+            question: "Should I stretch before or after workouts?",
+            answer: "Do dynamic stretching (moving stretches) before workouts to warm up. Do static stretching (holding stretches) after workouts when muscles are warm to improve flexibility."
+        }
+    ];
+
+    // Randomly select 6 questions
+    function getRandomQuestions() {
+        const shuffled = workoutQA.sort(() => 0.5 - Math.random());
+        return shuffled.slice(0, 6);
+    }
+
+    // Display questions
+    function displayQuestions() {
+        const qaGrid = document.getElementById('qa-grid');
+        const randomQuestions = getRandomQuestions();
+        
+        qaGrid.innerHTML = '';
+        
+        randomQuestions.forEach((qa, index) => {
+            const questionButton = document.createElement('button');
+            questionButton.className = 'text-left p-4 bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 rounded-lg border border-blue-200 transition-all duration-200 transform hover:scale-105';
+            questionButton.innerHTML = `
+                <div class="flex items-start space-x-3">
+                    <div class="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                        ${index + 1}
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm font-medium text-gray-900">${qa.question}</p>
+                        <p class="text-xs text-gray-500 mt-1">Click to see answer</p>
+                    </div>
+                </div>
+            `;
+            
+            questionButton.addEventListener('click', () => showAnswer(qa.question, qa.answer));
+            qaGrid.appendChild(questionButton);
+        });
+    }
+
+    // Show answer
+    window.showAnswer = function(question, answer) {
+        document.getElementById('answer-question').textContent = question;
+        document.getElementById('answer-text').textContent = answer;
+        document.getElementById('answer-section').classList.remove('hidden');
+        document.getElementById('qa-grid').classList.add('hidden');
+    };
+
+    // Hide answer
+    window.hideAnswer = function() {
+        document.getElementById('answer-section').classList.add('hidden');
+        document.getElementById('qa-grid').classList.remove('hidden');
+    };
+
+    // Initialize
+    displayQuestions();
+});
+</script>
+
 @endsection

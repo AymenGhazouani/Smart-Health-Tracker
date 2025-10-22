@@ -28,14 +28,15 @@ class UpdatePsySessionRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'psychologist_id.exists' => 'Selected psychologist does not exist.',
-            'patient_id.exists' => 'Selected patient does not exist.',
-            'start_time.date' => 'Please provide a valid start time.',
-            'end_time.date' => 'Please provide a valid end time.',
-            'end_time.after' => 'End time must be after start time.',
-            'status.in' => 'Invalid session status.',
-            'session_fee.numeric' => 'Session fee must be a valid number.',
-            'session_fee.min' => 'Session fee cannot be negative.',
+            'psychologist_id.exists' => 'Le psychologue sélectionné n\'existe pas.',
+            'patient_id.exists' => 'Le patient sélectionné n\'existe pas.',
+            'start_time.date' => 'Veuillez fournir une heure de début valide.',
+            'end_time.date' => 'Veuillez fournir une heure de fin valide.',
+            'end_time.after' => 'L\'heure de fin doit être après l\'heure de début.',
+            'status.in' => 'Statut de séance invalide.',
+            'notes.max' => 'Les notes ne peuvent pas dépasser 1000 caractères.',
+            'session_fee.numeric' => 'Le tarif de la séance doit être un nombre valide.',
+            'session_fee.min' => 'Le tarif de la séance ne peut pas être négatif.',
         ];
     }
 }

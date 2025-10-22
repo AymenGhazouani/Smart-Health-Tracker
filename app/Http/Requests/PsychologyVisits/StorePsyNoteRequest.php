@@ -14,7 +14,9 @@ class StorePsyNoteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'content' => 'required|string|max:10000',
+            'psy_session_id' => 'required|exists:psy_sessions,id',
+            'psychologist_id' => 'required|exists:psychologists,id',
+            'content' => 'required|string|max:10000|min:1',
             'note_type' => 'required|in:session_notes,assessment,follow_up,treatment_plan,progress_notes,other',
             'is_encrypted' => 'sometimes|boolean',
         ];
@@ -23,12 +25,17 @@ class StorePsyNoteRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'content.required' => 'Note content is required.',
-            'content.string' => 'Note content must be text.',
-            'content.max' => 'Note content cannot exceed 10,000 characters.',
-            'note_type.required' => 'Note type is required.',
-            'note_type.in' => 'Invalid note type.',
-            'is_encrypted.boolean' => 'Encryption setting must be true or false.',
+            'psy_session_id.required' => 'La séance est requise.',
+            'psy_session_id.exists' => 'La séance sélectionnée n\'existe pas.',
+            'psychologist_id.required' => 'Le psychologue est requis.',
+            'psychologist_id.exists' => 'Le psychologue sélectionné n\'existe pas.',
+            'content.required' => 'Le contenu de la note est requis.',
+            'content.string' => 'Le contenu de la note doit être du texte.',
+            'content.min' => 'Le contenu de la note doit contenir au moins 1 caractère.',
+            'content.max' => 'Le contenu de la note ne peut pas dépasser 10 000 caractères.',
+            'note_type.required' => 'Le type de note est requis.',
+            'note_type.in' => 'Type de note invalide.',
+            'is_encrypted.boolean' => 'Le paramètre de chiffrement doit être vrai ou faux.',
         ];
     }
 }

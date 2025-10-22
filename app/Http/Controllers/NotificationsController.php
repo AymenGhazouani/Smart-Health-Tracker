@@ -3,34 +3,30 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class NotificationsController extends Controller
 {
     public function index()
     {
-        $user = Auth::user();
-        $notifications = $user->notifications()->latest()->paginate(20);
+        $user = auth()->user();
+        $notifications = $user->notifications()->paginate(20);
         $unreadCount = $user->unreadNotifications()->count();
 
         return view('notifications.index', compact('notifications', 'unreadCount'));
     }
 
-    public function markAsRead(string $id)
+    public function markAsRead($id)
     {
-        $notification = Auth::user()->notifications()->where('id', $id)->firstOrFail();
-        if (is_null($notification->read_at)) {
-            $notification->markAsRead();
-        }
-        return back();
+        $notification = auth()->user()->notifications()->findOrFail($id);
+        $notification->markAsRead();
+
+        return redirect()->back()->with('success', 'Notification marked as read.');
     }
 
     public function markAllAsRead()
     {
-        $user = Auth::user();
-        $user->unreadNotifications->markAsRead();
-        return back();
+        auth()->user()->unreadNotifications->markAsRead();
+
+        return redirect()->back()->with('success', 'All notifications marked as read.');
     }
 }
-
-

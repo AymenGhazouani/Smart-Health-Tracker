@@ -46,6 +46,11 @@ Route::middleware(['auth'])->group(function () {
     
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    // Notifications
+    Route::get('/notifications', [\App\Http\Controllers\NotificationsController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/{id}/read', [\App\Http\Controllers\NotificationsController::class, 'markAsRead'])->name('notifications.read');
+    Route::post('/notifications/read-all', [\App\Http\Controllers\NotificationsController::class, 'markAllAsRead'])->name('notifications.readAll');
+
     /**
      * ==============================
      *  Metrics Routes
@@ -53,10 +58,7 @@ Route::middleware(['auth'])->group(function () {
      */
     Route::get('/metrics', [MetricsDashboardController::class, 'index'])->name('metrics.dashboard');
 
-    // Notifications
-    Route::get('/notifications', [\App\Http\Controllers\NotificationsController::class, 'index'])->name('notifications.index');
-    Route::post('/notifications/{id}/read', [\App\Http\Controllers\NotificationsController::class, 'markAsRead'])->name('notifications.read');
-    Route::post('/notifications/read-all', [\App\Http\Controllers\NotificationsController::class, 'markAllAsRead'])->name('notifications.readAll');
+
 
     // User metrics routes
 

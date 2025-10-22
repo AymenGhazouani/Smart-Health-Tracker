@@ -100,7 +100,7 @@ public function create()
 
     $doctor = Doctor::create($data);
 
-    return redirect()->route('doctor.index')->with('success', 'Doctor created successfully!');
+    return redirect()->route('admin.doctor.index')->with('success', 'Doctor created successfully!');
 }
 
 //     public function store(Request $request, DoctorReviewService $doctorReviewService)
@@ -181,7 +181,7 @@ public function show(Doctor $doctor)
     ]);
 
     $this->doctorService->update($doctor, $data);
-return redirect()->route('doctor.index')->with('success', 'Doctor updated successfully!');
+return redirect()->route('admin.doctor.index')->with('success', 'Doctor updated successfully!');
 
 }
 
@@ -219,7 +219,7 @@ return redirect()->route('doctor.index')->with('success', 'Doctor updated succes
     }
 
     $this->doctorService->delete($doctor);
-return redirect()->route('doctor.index')->with('success', 'Doctor deleted successfully!');
+return redirect()->route('admin.doctor.index')->with('success', 'Doctor deleted successfully!');
 
 }
 

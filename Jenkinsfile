@@ -87,17 +87,70 @@ pipeline {
             }
         }
 
+        stage('Clear Laravel Caches') {
+            when {
+                expression { return !params.REFRESH_BRANCHES }
+            }
+            steps {
+                sh '''
+                    # Wait for app container to be ready
+                    sleep 5
+                    
+                    # Clear all Laravel caches to ensure clean deployment
+                    echo "Clearing Laravel caches..."
+                    docker compose exec -T app php artisan config:clear || docker compose run --rm app php artisan config:clear
+                    docker compose exec -T app php artisan cache:clear || docker compose run --rm app php artisan cache:clear
+                    docker compose exec -T app php artisan route:clear || docker compose run --rm app php artisan route:clear
+                    docker compose exec -T app php artisan view:clear || docker compose run --rm app php artisan view:clear
+                    docker compose exec -T app php artisan clear-compiled || docker compose run --rm app php artisan clear-compiled
+                    docker compose exec -T app php artisan optimize:clear || docker compose run --rm app php artisan optimize:clear
+                '''
+            }
+        }
+
         stage('Run Migrations') {
             when {
                 expression { return !params.REFRESH_BRANCHES }
             }
             steps {
-                // Use exec -T for non-interactive runs; adjust if your service name differs.
                 sh '''
-                    # wait a bit for the app container to be healthy (adjust as needed)
-                    sleep 5
+                    # Run database migrations
                     docker compose exec -T app php artisan migrate --force || docker compose run --rm app php artisan migrate --force
                 '''
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            when {
+                expression { return !params.REFRESH_BRANCHES }
+            }
+            steps {
+                script {
+                    def scannerHome = tool 'SonarQubeScanner'
+                    withSonarQubeEnv('SonarQube') {
+                        sh """
+                            ${scannerHome}/bin/sonar-scanner \
+                            -Dsonar.projectKey=laravel-health-tracker \
+                            -Dsonar.projectName='Laravel Health Tracker' \
+                            -Dsonar.projectVersion=1.0 \
+                            -Dsonar.sources=. \
+                            -Dsonar.exclusions='vendor/**,node_modules/**,storage/**,bootstrap/cache/**,public/build/**,tests/**' \
+                            -Dsonar.php.coverage.reportPaths=coverage.xml \
+                            -Dsonar.php.tests.reportPath=tests/results.xml
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('Quality Gate') {
+            when {
+                expression { return !params.REFRESH_BRANCHES }
+            }
+            steps {
+                timeout(time: 5, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: false
+                }
             }
         }
 

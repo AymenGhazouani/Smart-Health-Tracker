@@ -1,0 +1,280 @@
+/* Shared AI Dashboard Styling */
+.ai-dashboard {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    padding: 2rem 0;
+}
+
+.ai-dashboard .container-fluid {
+    padding: 0 2rem;
+}
+
+/* Card Styling */
+.ai-dashboard .card {
+    border: 1px solid #e3e6f0;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.ai-dashboard .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.25rem 2rem 0 rgba(58, 59, 69, 0.2);
+}
+
+.ai-dashboard .card-header {
+    background-color: #5a5c69;
+    border-bottom: 1px solid #e3e6f0;
+    padding: 1rem 1.25rem;
+    border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.ai-dashboard .card-header h3, 
+.ai-dashboard .card-header h5 {
+    color: white;
+    margin: 0;
+    font-weight: 600;
+}
+
+/* Health Score Cards */
+.ai-dashboard .card.bg-primary { 
+    background-color: #4e73df !important; 
+    border: none;
+}
+.ai-dashboard .card.bg-success { 
+    background-color: #1cc88a !important; 
+    border: none;
+}
+.ai-dashboard .card.bg-warning { 
+    background-color: #f6c23e !important; 
+    border: none;
+}
+.ai-dashboard .card.bg-info { 
+    background-color: #36b9cc !important; 
+    border: none;
+}
+
+.ai-dashboard .card.bg-primary:hover,
+.ai-dashboard .card.bg-success:hover,
+.ai-dashboard .card.bg-warning:hover,
+.ai-dashboard .card.bg-info:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0.5rem 2rem 0 rgba(58, 59, 69, 0.3);
+}
+
+/* Badge Styling */
+.ai-dashboard .badge {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.25rem;
+    font-weight: 600;
+}
+
+.ai-dashboard .badge-info {
+    background-color: #36b9cc;
+    color: white;
+}
+
+.ai-dashboard .badge-success {
+    background-color: #1cc88a;
+    color: white;
+}
+
+.ai-dashboard .badge-warning {
+    background-color: #f6c23e;
+    color: #212529;
+}
+
+.ai-dashboard .badge-danger {
+    background-color: #e74a3b;
+    color: white;
+}
+
+/* Alert Styling */
+.ai-dashboard .alert {
+    border-radius: 0.5rem;
+    border: 1px solid transparent;
+    margin-bottom: 1rem;
+}
+
+.ai-dashboard .alert-warning {
+    background-color: #fff3cd;
+    border-color: #ffeaa7;
+    color: #856404;
+}
+
+.ai-dashboard .alert-danger {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+}
+
+.ai-dashboard .alert-info {
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+    color: #0c5460;
+}
+
+/* Button Styling */
+.ai-dashboard .btn {
+    border-radius: 0.35rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    padding: 0.5rem 1rem;
+}
+
+.ai-dashboard .btn-info {
+    background-color: #36b9cc;
+    border-color: #36b9cc;
+    color: white;
+}
+
+.ai-dashboard .btn-info:hover {
+    background-color: #2c9faf;
+    border-color: #2a96a5;
+    transform: translateY(-1px);
+    color: white;
+}
+
+.ai-dashboard .btn-success {
+    background-color: #1cc88a;
+    border-color: #1cc88a;
+    color: white;
+}
+
+.ai-dashboard .btn-success:hover {
+    background-color: #17a673;
+    border-color: #169b6b;
+    transform: translateY(-1px);
+    color: white;
+}
+
+.ai-dashboard .btn-primary {
+    background-color: #4e73df;
+    border-color: #4e73df;
+    color: white;
+}
+
+.ai-dashboard .btn-primary:hover {
+    background-color: #2e59d9;
+    border-color: #2653d4;
+    transform: translateY(-1px);
+    color: white;
+}
+
+/* Progress Bar */
+.ai-dashboard .progress {
+    height: 1rem;
+    border-radius: 0.5rem;
+    background-color: #e9ecef;
+}
+
+.ai-dashboard .progress-bar {
+    background-color: #4e73df;
+    border-radius: 0.5rem;
+}
+
+/* AI Explanation Section */
+.ai-dashboard .ai-method-card {
+    background: white;
+    border: 1px solid #e3e6f0;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.ai-dashboard .ai-method-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.25rem 1rem 0 rgba(58, 59, 69, 0.15);
+}
+
+.ai-dashboard .formula-box {
+    background: #f8f9fa;
+    border: 1px solid #e3e6f0;
+    border-radius: 0.25rem;
+    padding: 0.75rem;
+    margin-top: 1rem;
+    border-left: 3px solid #4e73df;
+}
+
+.ai-dashboard .formula-box code {
+    background: transparent;
+    color: #4e73df;
+    font-weight: 600;
+}
+
+/* Feature Cards */
+.ai-dashboard .feature-card {
+    transition: all 0.3s ease;
+    border: 1px solid #e3e6f0;
+}
+
+.ai-dashboard .feature-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0.5rem 2rem 0 rgba(58, 59, 69, 0.2);
+}
+
+/* Form Styling */
+.ai-dashboard .form-control {
+    border: 1px solid #d1d3e2;
+    border-radius: 0.35rem;
+    padding: 0.375rem 0.75rem;
+}
+
+.ai-dashboard .form-control:focus {
+    border-color: #4e73df;
+    box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+}
+
+/* Table Styling */
+.ai-dashboard .table {
+    background: white;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.ai-dashboard .table th {
+    background-color: #f8f9fc;
+    border-color: #e3e6f0;
+    font-weight: 600;
+    color: #5a5c69;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .ai-dashboard .container-fluid {
+        padding: 0 1rem;
+    }
+    
+    .ai-dashboard {
+        padding: 1rem 0;
+    }
+    
+    .ai-dashboard .card-header h3 {
+        font-size: 1.25rem;
+    }
+}
+
+/* Loading States */
+.ai-dashboard .loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.ai-dashboard .spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* Icon Styling */
+.ai-dashboard .fas {
+    margin-right: 0.5rem;
+}
+
+.ai-dashboard .text-muted {
+    color: #6c757d !important;
+}

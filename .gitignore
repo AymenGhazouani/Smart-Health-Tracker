@@ -16,3 +16,96 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+
+# Test files and directories
+/tests/Feature/temp/
+/tests/Unit/temp/
+*_test.php
+*Test.php.bak
+/coverage/
+/phpunit.xml.bak
+/.phpunit.cache
+/test-results/
+
+# Development and debugging files
+*.log
+*.tmp
+*.temp
+/debug/
+/logs/
+error.log
+access.log
+laravel.log
+
+# Database files (if using SQLite for testing)
+*.sqlite
+*.sqlite3
+database/*.sqlite
+database/*.sqlite3
+/database/database.sqlite
+
+# Cache and temporary files
+/bootstrap/cache/*.php
+/storage/framework/cache/data/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/logs/*
+/storage/app/public/*
+/storage/debugbar/
+
+# IDE and editor files
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*.sublime-project
+*.sublime-workspace
+
+# Backup files
+*.bak
+*.backup
+*.old
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Composer
+composer.phar
+/vendor/
+composer.lock.bak
+
+# NPM/Yarn
+package-lock.json.bak
+yarn.lock.bak
+
+# Laravel specific
+/public/css/app.css.map
+/public/js/app.js.map
+/public/mix-manifest.json.bak
+
+# Documentation drafts
+/docs/drafts/
+README.md.bak
+CHANGELOG.md.bak
+
+# AI/ML model files (if you add any binary models later)
+*.pkl
+*.joblib
+*.h5
+*.pb
+/models/
+/ml_models/
+
+# Sample/test data files
+/sample_data/
+/test_data/
+*.csv.test
+*.json.test
